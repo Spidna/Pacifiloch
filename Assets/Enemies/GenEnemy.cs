@@ -25,7 +25,7 @@ public class GenEnemy : MonoBehaviour
     [Tooltip("Distance from targetP")]
     private float targetDist = 0f;
     [Tooltip("EMPTY which buffers turns by leading this enemy.")]
-    [SerializeField] Rabbit _rabbit;
+    //[SerializeField] Rabbit _rabbit;
 
     // Start is called before the first frame update
     void Start()
