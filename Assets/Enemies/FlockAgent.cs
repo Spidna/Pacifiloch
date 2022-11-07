@@ -7,8 +7,13 @@ public class FlockAgent : MonoBehaviour
 {
     [Tooltip("The field in which other agents can be seen")]
     [SerializeField] private float angleFOV;
+    [Tooltip("Lower value allows faster rotation??")]
+    [SerializeField] private float smoothDamp;
+
     private List<FlockAgent> cohesionNeighbours = new List<FlockAgent>();
     private Flock assignedFlock;
+    private Vector3 curVel;
+    private float speed;
 
     public Transform myTransform { get; set; } // Quick access for faster computing
 
@@ -17,21 +22,30 @@ public class FlockAgent : MonoBehaviour
         assignedFlock = flock;
     }
 
+    // InitializeSpeed is a fake function that is redundant
+
     public void MoveUnit()
     {
+        // Gravitate towards seen neighbours
+        FindNeighbours();
         Vector3 cohesionVector = CalculateCohesionVector();
+        // Push towards cohesion vector in world space
+        Vector3 moveVector = Vector3.SmoothDamp(myTransform.forward, cohesionVector, ref curVel, smoothDamp);
+        moveVector = moveVector.normalized * speed;
+        myTransform.forward = moveVector;
+        myTransform.position += moveVector * Time.deltaTime;
     }
 
     private void FindNeighbours()
     {
         cohesionNeighbours.Clear(); // Start fresh
-        FlockAgent[] allAgents = assignedFlock.allAgents; // Collect agents from current flock for faster calcs
-        for (int i = 0; i < allAgents.Length; i++)
+        List<FlockAgent> allAgents = assignedFlock.allAgents; // Collect agents from current flock for faster calcs
+        for (int i = 0; i < allAgents.Count; i++)
         {
             FlockAgent curAgent = allAgents[i];
             if (curAgent != this) // Skip checking self
             {
-                // If agent is close enough make them a neighbour
+                // If agent is close enough, make them a neighbour
                 float neighbourDist = Vector3.SqrMagnitude(curAgent.transform.position - transform.position);
                 if (neighbourDist <= assignedFlock.cohesionDistance * assignedFlock.cohesionDistance)
                 {
@@ -41,14 +55,12 @@ public class FlockAgent : MonoBehaviour
         }
     }
 
+    // Gravitate towards the middle of seen neighbours
     private Vector3 CalculateCohesionVector()
     {
         var cohesionVector = Vector3.zero;
-        // Without neighbours there's nothing to return
-        if (cohesionNeighbours.Count == 0)
-            return cohesionVector;
 
-        // Find neighbours and average out ?positions?
+        // choose neighbours in FOV and average out ?positions?
         int neighboursSeen = 0;
         for (int i = 0; i < cohesionNeighbours.Count; i++)
         {

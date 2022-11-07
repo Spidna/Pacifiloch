@@ -142,7 +142,9 @@ public class Swimmer : MonoBehaviour
         return false;
     }
 
-    void checkTurn()
+    // !!! TODO
+    // !!! TODO
+    void checkTurn() // !!TODO: Use Vector3.SmoothDamp(myTransform.forward, target, ref curVel, smoothDamp)
     {
         if (handTurnEnabled) // if this is even enabled
         {
