@@ -34,14 +34,14 @@ public class Flock : MonoBehaviour //10:00
 
     private void GenerateUnits() //TODO pretty sure this is redundant
     {
-        allAgents = new List<FlockAgent>(spawnSize);
-        for (int i = 0; i < allAgents.Count; i++) 
+        allAgents = new List<FlockAgent>();
+        for (int i = 0; i < spawnSize; i++) 
         {
             var randomVector = UnityEngine.Random.insideUnitSphere;
             randomVector = new Vector3(randomVector.x * spawnBounds.x, randomVector.y * spawnBounds.x, randomVector.z * spawnBounds.x);
             var spawnPosition = transform.position + randomVector;
             var rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0);
-            allAgents[i] = Instantiate(agentPrefab, spawnPosition, rotation);
+            allAgents.Add(Instantiate(agentPrefab, spawnPosition, rotation));
             allAgents[i].AssignFlock(this);
         }
     }

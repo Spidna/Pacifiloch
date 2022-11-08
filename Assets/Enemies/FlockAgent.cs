@@ -13,9 +13,9 @@ public class FlockAgent : MonoBehaviour
     private List<FlockAgent> cohesionNeighbours = new List<FlockAgent>();
     private Flock assignedFlock;
     private Vector3 curVel;
-    private float speed;
+    [SerializeField] private float speed;
 
-    public Transform myTransform { get; set; } // Quick access for faster computing
+    //public Transform myTransform { get; set; } // Quick access for faster computing
 
     public void AssignFlock(Flock flock)
     {
@@ -30,10 +30,10 @@ public class FlockAgent : MonoBehaviour
         FindNeighbours();
         Vector3 cohesionVector = CalculateCohesionVector();
         // Push towards cohesion vector in world space
-        Vector3 moveVector = Vector3.SmoothDamp(myTransform.forward, cohesionVector, ref curVel, smoothDamp);
+        Vector3 moveVector = Vector3.SmoothDamp(transform.forward, cohesionVector, ref curVel, smoothDamp);
         moveVector = moveVector.normalized * speed;
-        myTransform.forward = moveVector;
-        myTransform.position += moveVector * Time.deltaTime;
+        transform.forward = moveVector;
+        transform.position += moveVector * Time.deltaTime;
     }
 
     private void FindNeighbours()
@@ -64,10 +64,10 @@ public class FlockAgent : MonoBehaviour
         int neighboursSeen = 0;
         for (int i = 0; i < cohesionNeighbours.Count; i++)
         {
-            if (IsInFOV(cohesionNeighbours[i].myTransform.position))
+            if (IsInFOV(cohesionNeighbours[i].transform.position))
             {
                 neighboursSeen++;
-                cohesionVector += cohesionNeighbours[i].myTransform.position;
+                cohesionVector += cohesionNeighbours[i].transform.position;
             }
         }
 
@@ -79,13 +79,13 @@ public class FlockAgent : MonoBehaviour
 
         // Calculate cohesion vector
         cohesionVector /= neighboursSeen;
-        cohesionVector -= myTransform.position; // convert to local space
+        cohesionVector -= transform.position; // convert to local space
         cohesionVector = Vector3.Normalize(cohesionVector);
         return cohesionVector;
     }
 
     private bool IsInFOV(Vector3 neighbourPos)
     {
-        return Vector3.Angle(myTransform.forward, neighbourPos - myTransform.position) <= angleFOV;
+        return Vector3.Angle(transform.forward, neighbourPos - transform.position) <= angleFOV;
     }
 }
