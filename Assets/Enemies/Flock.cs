@@ -11,20 +11,44 @@ public class Flock : MonoBehaviour //10:00
     [SerializeField] private Vector3 spawnBounds;
 
     [Header("Detection Distances")]
+    [Tooltip("Distance between Agents who count as Cohesion Neighbours")]
     [Range(0f, 10f)]
-    [Tooltip("The distance between agents that counts as neighbours")]
     [SerializeField] private float _cohesionDistance;
     public float cohesionDistance { get { return _cohesionDistance; } }
+    [Tooltip("Distance between Agents who count as Avoidance Neighbours")]
+    [Range(0f, 10f)]
+    [SerializeField] private float _avoidanceDistance;
+    public float avoidanceDistance { get { return _avoidanceDistance; } }
+    [Tooltip("Distance between Agents who count as Alignment Neighbours")]
+    [Range(0f, 10f)]
+    [SerializeField] private float _alignmentDistance;
+    public float alignmentDistance { get { return _alignmentDistance; } }
+
+    [Header("Behaviour Weights")]
+    [Tooltip("How strongly attracted agents are")]
+    [Range(0f, 10f)]
+    [SerializeField] private float _cohesionWeight;
+    public float cohesionWeight { get { return _cohesionWeight; } }
+    [Tooltip("How respected personal space is")]
+    [Range(0f, 10f)]
+    [SerializeField] private float _avoidanceWeight;
+    public float avoidanceWeight { get { return _avoidanceWeight; } }
+    [Tooltip("How much agents want to go the same direction")]
+    [Range(0f, 10f)]
+    [SerializeField] private float _alignmentWeight;
+    public float alignmentWeight { get { return _alignmentWeight; } }
+
 
     [SerializeField] private int spawnSize; // TODO update to use a list
     public List<FlockAgent> allAgents { get; set; } // TODO update to use a list
 
     private void Start()
     {
-        GenerateUnits();
+        allAgents = new List<FlockAgent>();
+        GenerateUnits(spawnSize, spawnBounds);
     }
 
-    private void Update()
+    private void FixedUpdate() // TODO: Call checks for unit death
     {
         for (int i = 0; i < allAgents.Count; i++)
         {
@@ -32,15 +56,14 @@ public class Flock : MonoBehaviour //10:00
         }
     }
 
-    private void GenerateUnits() //TODO pretty sure this is redundant
+    private void GenerateUnits(int spawnCount, Vector3 _spawnBounds)
     {
-        allAgents = new List<FlockAgent>();
-        for (int i = 0; i < spawnSize; i++) 
+        for (int i = 0; i < spawnCount; i++) 
         {
-            var randomVector = UnityEngine.Random.insideUnitSphere;
-            randomVector = new Vector3(randomVector.x * spawnBounds.x, randomVector.y * spawnBounds.x, randomVector.z * spawnBounds.x);
-            var spawnPosition = transform.position + randomVector;
-            var rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0);
+            Vector3 randomVector = UnityEngine.Random.insideUnitSphere;
+            randomVector = new Vector3(randomVector.x * _spawnBounds.x, randomVector.y * _spawnBounds.x, randomVector.z * _spawnBounds.x);
+            Vector3 spawnPosition = transform.position + randomVector;
+            Quaternion rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0);
             allAgents.Add(Instantiate(agentPrefab, spawnPosition, rotation));
             allAgents[i].AssignFlock(this);
         }
