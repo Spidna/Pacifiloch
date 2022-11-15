@@ -33,18 +33,14 @@ public class FlockAgent : MonoBehaviour
         Vector3 avoidanceVector = CalcAvoidanceVector() * assignedFlock.avoidanceWeight;
         // Go the same direction as neighbours
         Vector3 alignmentVector = CalcAlignmentVector() * assignedFlock.alignmentWeight;
+        // Home in on target (aka player)
+        Vector3 targetVector = CalcTargetVector() * assignedFlock.targetWeight;
 
         // move
-        Vector3 moveVector = cohesionVector + avoidanceVector + alignmentVector;
+        Vector3 moveVector = cohesionVector + avoidanceVector + alignmentVector + targetVector;
         moveVector = moveVector.normalized * speed;
         moveVector = Vector3.SmoothDamp(transform.forward, moveVector, ref curVel, smoothDamp);
-        // TODO: Hopefully find a way to do this properly and constraint Z axis
         rb.transform.forward = moveVector;
-        //rb.MoveRotation
-        //    (Quaternion.LookRotation(moveVector - transform.position,
-        //    transform.rotation * Vector3.up));
-        // rb.transform.position += moveVector * Time.deltaTime;
-
         rb.MovePosition(transform.position + moveVector * Time.deltaTime);
     }
 
@@ -166,7 +162,7 @@ public class FlockAgent : MonoBehaviour
     // Go towards target, typically the player
     private Vector3 CalcTargetVector()
     {
-        throw new NotImplementedException();
+        return (assignedFlock.target.transform.position - transform.position).normalized;
     }
 
     private bool IsInFOV(Vector3 neighbourPos)

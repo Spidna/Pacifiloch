@@ -1363,14 +1363,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   agentPrefab: {fileID: 5299446999655685367, guid: 84bb091ee53ed7943a66ecab6c6b8a41, type: 3}
   spawnBounds: {x: 10, y: 5, z: 10}
-  _cohesionDistance: 8.36
-  _avoidanceDistance: 0.64
+  _cohesionDistance: 7.5
+  _avoidanceDistance: 0.85
   _alignmentDistance: 1.06
   _targetingRange: 3.18
-  _cohesionWeight: 3.48
-  _avoidanceWeight: 5.07
-  _alignmentWeight: 0.32
-  targetWeight: 3.3
+  _cohesionWeight: 2.3
+  _avoidanceWeight: 3.6
+  _alignmentWeight: 1.2
+  targetWeight: 2.2
   spawnSize: 20
   _target: {fileID: 0}
   _targetTag: Player
