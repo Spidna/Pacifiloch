@@ -23,6 +23,10 @@ public class Flock : MonoBehaviour //10:00
     [Range(0f, 10f)]
     [SerializeField] private float _alignmentDistance;
     public float alignmentDistance { get { return _alignmentDistance; } }
+    [Tooltip("Range agents can detect their target from")]
+    [Range(0f, 10f)]
+    [SerializeField] private float _targetingRange;
+    public float targetingRange { get { return _targetingRange; } }
 
     [Header("Behaviour Weights")]
     [Tooltip("How strongly attracted agents are")]
@@ -37,14 +41,27 @@ public class Flock : MonoBehaviour //10:00
     [Range(0f, 10f)]
     [SerializeField] private float _alignmentWeight;
     public float alignmentWeight { get { return _alignmentWeight; } }
+    [Tooltip("How much agents move to target (negative makes flee)")]
+    [Range(-10f, 10f)]
+    public float targetWeight;
+
+    [SerializeField] private int spawnSize; // TODO: update to use a list of spawn locations
+    public List<FlockAgent> allAgents { get; set; }
 
 
-    [SerializeField] private int spawnSize; // TODO update to use a list
-    public List<FlockAgent> allAgents { get; set; } // TODO update to use a list
+    [Tooltip("The thing that the flock attacks/avoids")]
+    // TODO: update to have a list of targets in the event of multiplayer or 'substitutes'
+    [SerializeField] private GameObject _target;
+    [Tooltip("Tag used to find target(s)")]
+    [SerializeField] private string _targetTag;
+    public GameObject target { get { return _target; } }
+
 
     private void Start()
     {
-        allAgents = new List<FlockAgent>();
+        // Find target
+        FindTarget();
+
         GenerateUnits(spawnSize, spawnBounds);
     }
 
@@ -58,7 +75,9 @@ public class Flock : MonoBehaviour //10:00
 
     private void GenerateUnits(int spawnCount, Vector3 _spawnBounds)
     {
-        for (int i = 0; i < spawnCount; i++) 
+        allAgents = new List<FlockAgent>();
+
+        for (int i = 0; i < spawnCount; i++)
         {
             Vector3 randomVector = UnityEngine.Random.insideUnitSphere;
             randomVector = new Vector3(randomVector.x * _spawnBounds.x, randomVector.y * _spawnBounds.x, randomVector.z * _spawnBounds.x);
@@ -67,6 +86,22 @@ public class Flock : MonoBehaviour //10:00
             allAgents.Add(Instantiate(agentPrefab, spawnPosition, rotation));
             allAgents[i].AssignFlock(this);
         }
+    }
+
+    private void FindTarget()
+    {
+        // Find possible targets
+        GameObject[] targetArray = GameObject.FindGameObjectsWithTag(_targetTag);
+
+        // Since we should only have 1 possible target so far, throw an error if there's multiple
+        //TODO: ammend this to a list so we can choose a target instead
+        if (targetArray.Length != 1)
+        {
+            Debug.LogError("Incorrect number of targets with tag: " + _targetTag + " - " + targetArray.Length
+                + ". Where targets should only be 1.");
+            Debug.Break();
+        }
+        _target = targetArray[0];
     }
 
 }

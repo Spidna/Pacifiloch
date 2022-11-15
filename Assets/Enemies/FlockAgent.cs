@@ -28,13 +28,12 @@ public class FlockAgent : MonoBehaviour
     {
         // Gravitate towards seen neighbours
         FindNeighbours();
-        Vector3 cohesionVector = CalculateCohesionVector() * assignedFlock.cohesionWeight;
+        Vector3 cohesionVector = CalcCohesionVector() * assignedFlock.cohesionWeight;
         // Avoid personal space of neighbours
-        Vector3 avoidanceVector = CalculateAvoidanceVector() * assignedFlock.avoidanceWeight;
+        Vector3 avoidanceVector = CalcAvoidanceVector() * assignedFlock.avoidanceWeight;
         // Go the same direction as neighbours
-        Vector3 alignmentVector = CalculateAlignmentVector() * assignedFlock.alignmentWeight;
+        Vector3 alignmentVector = CalcAlignmentVector() * assignedFlock.alignmentWeight;
 
-        print(avoidanceVector);
         // move
         Vector3 moveVector = cohesionVector + avoidanceVector + alignmentVector;
         moveVector = moveVector.normalized * speed;
@@ -80,7 +79,7 @@ public class FlockAgent : MonoBehaviour
     }
 
     // Gravitate towards the middle of seen neighbours
-    private Vector3 CalculateCohesionVector()
+    private Vector3 CalcCohesionVector()
     {
         Vector3 cohesionVector = Vector3.zero;
 
@@ -109,7 +108,7 @@ public class FlockAgent : MonoBehaviour
     }
 
     // Avoid neighbours' personal space
-    private Vector3 CalculateAvoidanceVector()
+    private Vector3 CalcAvoidanceVector()
     {
         Vector3 avoidanceVector = Vector3.zero;
 
@@ -120,6 +119,7 @@ public class FlockAgent : MonoBehaviour
             if (IsInFOV(avoidanceNeighbours[i].transform.position))
             {
                 neighboursSeen++;
+                // Average of the differences between my pos and neighbour pos
                 avoidanceVector += (transform.position - avoidanceNeighbours[i].transform.position);
             }
         }
@@ -133,14 +133,13 @@ public class FlockAgent : MonoBehaviour
 
         // Calculate cohesion vector
         avoidanceVector /= neighboursSeen;
-        //avoidanceVector -= transform.position; // convert to local space
         avoidanceVector = avoidanceVector.normalized;
         return avoidanceVector;
     }
 
     // Go the same direction as neighbours
     /// Even if we target player, may as well keep this backup function for later
-    private Vector3 CalculateAlignmentVector()
+    private Vector3 CalcAlignmentVector()
     {
         Vector3 alignVector = transform.forward;
 
@@ -162,6 +161,12 @@ public class FlockAgent : MonoBehaviour
         alignVector /= neighboursSeen;
         alignVector = alignVector.normalized;
         return alignVector;
+    }
+
+    // Go towards target, typically the player
+    private Vector3 CalcTargetVector()
+    {
+        throw new NotImplementedException();
     }
 
     private bool IsInFOV(Vector3 neighbourPos)

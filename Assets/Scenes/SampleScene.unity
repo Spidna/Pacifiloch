@@ -294,7 +294,7 @@ GameObject:
   - component: {fileID: 367424585}
   m_Layer: 6
   m_Name: Player
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 419385456094870383, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1366,10 +1366,14 @@ MonoBehaviour:
   _cohesionDistance: 8.36
   _avoidanceDistance: 0.64
   _alignmentDistance: 1.06
+  _targetingRange: 3.18
   _cohesionWeight: 3.48
   _avoidanceWeight: 5.07
   _alignmentWeight: 0.32
+  targetWeight: 3.3
   spawnSize: 20
+  _target: {fileID: 0}
+  _targetTag: Player
 --- !u!4 &1048109211
 Transform:
   m_ObjectHideFlags: 0
