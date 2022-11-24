@@ -2,7 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Flock : MonoBehaviour //10:00
+/* NOTE: It's unlikely that the Obstacle avoidance function will work well
+ * against large, flat surfaces or intersecting obstacle hitboxes.
+ */
+
+public class Flock : MonoBehaviour ///10:00
 {
     [Header("Spawn Setup")]
     [Tooltip("The prefab that will be used to populate flock")]
@@ -27,6 +31,10 @@ public class Flock : MonoBehaviour //10:00
     [Range(0f, 10f)]
     [SerializeField] private float _targetingRange;
     public float targetingRange { get { return _targetingRange; } }
+    [Tooltip("Range agents will start avoiding obstacles")]
+    [Range(0f, 10f)]
+    [SerializeField] private float _obstacleRange;
+    public float obstacleRange { get { return _obstacleRange; } }
 
     [Header("Behaviour Weights")]
     [Tooltip("How strongly attracted agents are")]
@@ -44,23 +52,41 @@ public class Flock : MonoBehaviour //10:00
     [Tooltip("How much agents move to target (negative makes flee)")]
     [Range(-10f, 10f)]
     public float targetWeight;
+    [Tooltip("How strongly agents avoid obstacles")]
+    [Range(0f, 10f)]
+    [SerializeField] private float _obstacleWeight;
+    public float obstacleWeight { get { return _obstacleWeight; } }
 
     [SerializeField] private int spawnSize; // TODO: update to use a list of spawn locations
     public List<FlockAgent> allAgents { get; set; }
 
-
+    [Header("Other")]
     [Tooltip("The thing that the flock attacks/avoids")]
     // TODO: update to have a list of targets in the event of multiplayer or 'substitutes'
     [SerializeField] private GameObject _target;
     [Tooltip("Tag used to find target(s)")]
     [SerializeField] private string _targetTag;
     public GameObject target { get { return _target; } }
+    /* Quick example of how LayerMask works:
+      // Bit shift the index of the layer (8) to get a bit mask
+        int layerMask = 1 << 8;
+
+        // This would cast rays only against colliders in layer 8.
+        // But instead we want to collide against everything except layer 8. The ~ operator does this, it inverts a bitmask.
+        layerMask = ~layerMask;
+     */
+    [Tooltip("Which layer(s) are obstacles. DOESN'T LIVE UPDATE")]
+    [SerializeField] private int _obstacleLayerMask;
+    public int obstacleLayerMask { get { return _obstacleLayerMask; } }
 
 
     private void Start()
     {
         // Find target
         FindTarget();
+
+        // Convert to bitwise value.
+        _obstacleLayerMask = 1 << _obstacleLayerMask;
 
         GenerateUnits(spawnSize, spawnBounds);
     }

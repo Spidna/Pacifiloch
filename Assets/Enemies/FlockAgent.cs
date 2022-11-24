@@ -35,9 +35,11 @@ public class FlockAgent : MonoBehaviour
         Vector3 alignmentVector = CalcAlignmentVector() * assignedFlock.alignmentWeight;
         // Home in on target (aka player)
         Vector3 targetVector = CalcTargetVector() * assignedFlock.targetWeight;
+        // Avoid obstacles
+        Vector3 obstacleVecNormal = CalcObstacleVector() * assignedFlock.obstacleWeight;
 
         // move
-        Vector3 moveVector = cohesionVector + avoidanceVector + alignmentVector + targetVector;
+        Vector3 moveVector = cohesionVector + avoidanceVector + alignmentVector + targetVector + obstacleVecNormal;
         moveVector = moveVector.normalized * speed;
         moveVector = Vector3.SmoothDamp(transform.forward, moveVector, ref curVel, smoothDamp);
         rb.transform.forward = moveVector;
@@ -163,6 +165,24 @@ public class FlockAgent : MonoBehaviour
     private Vector3 CalcTargetVector()
     {
         return (assignedFlock.target.transform.position - transform.position).normalized;
+    }
+
+    private Vector3 CalcObstacleVector()
+    {
+        // Zero vector will prevent any effects
+        Vector3 obstacleVector = Vector3.zero;
+        // Information passed back by Physics.Raycast about closest obstacle
+        RaycastHit seenObstacle;
+        // avoidanceVector += (transform.position - avoidanceNeighbours[i].transform.position);
+
+        // If there's an obstacle ahead, avoid it
+        if (Physics.Raycast(transform.position, transform.forward, out seenObstacle, assignedFlock.obstacleRange, assignedFlock.obstacleLayerMask))
+        {
+            // Push Agent's move vector in the direction of the obstacle's collsion point normal vector
+            obstacleVector = seenObstacle.normal;
+        }
+
+        return obstacleVector;
     }
 
     private bool IsInFOV(Vector3 neighbourPos)
