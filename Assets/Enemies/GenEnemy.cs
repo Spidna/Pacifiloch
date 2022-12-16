@@ -6,21 +6,22 @@ public class GenEnemy : MonoBehaviour
 {
     [Header("Personal stats")]
     [Tooltip("Current hitpoints")]
-    [SerializeField] float hp;
+    [SerializeField] private float _hp;
     [Tooltip("Maximum hitpoints")]
-    [SerializeField] float maxHp;
+    [SerializeField] private float _maxHp;
     [Tooltip("Range to trigger attack from")]
-    [SerializeField] float atkRange;
+    [SerializeField] private float _atkRange;
     [Tooltip("My acceleration speed when swimming")]
-    [SerializeField] float moveSpeed;
+    [SerializeField] private float _moveSpeed;
     [Tooltip("My turn speed")]
-    [SerializeField] float turnSpeed;
+    [SerializeField] private float _turnSpeed;
 
     [Header("References")]
     [Tooltip("My rigidbody")]
-    [SerializeField] Rigidbody myRigidbody;
+    [SerializeField] private Rigidbody myRigidbody;
+    public Rigidbody rigidbody { get { return myRigidbody; } }
     [Tooltip("The player or dummy I'm targetting")]
-    [SerializeField] GameObject targetP;
+    [SerializeField] private GameObject _targetP;
 
     [Tooltip("Distance from targetP")]
     private float targetDist = 0f;
@@ -38,7 +39,7 @@ public class GenEnemy : MonoBehaviour
     //* mechanics easier to implement
     void chooseTarget()
     {
-        targetP = targetP;
+        _targetP = _targetP;
     }
 
     // Decide what to do
@@ -47,8 +48,8 @@ public class GenEnemy : MonoBehaviour
         chooseTarget();
         // If the target is close enough to attack, then do so.
         targetDist = (transform.position
-            - targetP.transform.position).magnitude;
-        if (atkRange >= targetDist)
+            - _targetP.transform.position).magnitude;
+        if (_atkRange >= targetDist)
         {
             doAtkSimple();
         }
@@ -101,8 +102,7 @@ public class GenEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        decisions();
-
+        //decisions();
     }
 
 

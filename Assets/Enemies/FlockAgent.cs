@@ -24,7 +24,8 @@ public class FlockAgent : MonoBehaviour
         assignedFlock = flock;
     }
 
-    public void MoveUnit()
+    [Tooltip("Execute flocking behaviour.")]
+    public void MoveAgent()
     {
         // Gravitate towards seen neighbours
         FindNeighbours();

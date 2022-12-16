@@ -127,18 +127,18 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4992806598980247998}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 153d922cf65c7864a943695ed05c8680, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 10
-  maxHp: 10
-  atkRange: 3
-  moveSpeed: 5
-  turnSpeed: 5
+  _hp: 0
+  _maxHp: 0
+  _atkRange: 0
+  _moveSpeed: 0
+  _turnSpeed: 0
   myRigidbody: {fileID: 5299446999655685361}
-  targetP: {fileID: 0}
+  _targetP: {fileID: 0}
 --- !u!114 &5299446999655685367
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -95,7 +95,7 @@ public class Flock : MonoBehaviour ///10:00
     {
         for (int i = 0; i < allAgents.Count; i++)
         {
-            allAgents[i].MoveUnit();
+            allAgents[i].MoveAgent();
         }
     }
 
