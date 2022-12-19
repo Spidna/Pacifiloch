@@ -490,10 +490,7 @@ MonoBehaviour:
   _hp: 0
   _maxHp: 0
   _atkRange: 0
-  _moveSpeed: 0
-  _turnSpeed: 0
-  myRigidbody: {fileID: 0}
-  _targetP: {fileID: 0}
+  moveScript: {fileID: 0}
 --- !u!1 &468011211
 GameObject:
   m_ObjectHideFlags: 0
@@ -1122,7 +1119,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1048109210
 MonoBehaviour:
   m_ObjectHideFlags: 0

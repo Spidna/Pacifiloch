@@ -3,29 +3,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FlockAgent : MonoBehaviour
+public class FlockAgent : WildMovement
 {
     [Tooltip("The field in which other agents can be seen")]
     [SerializeField] private float angleFOV;
-    [Tooltip("Lower value allows faster rotation??")]
-    [SerializeField] private float smoothDamp;
-    [SerializeField] private Rigidbody rb;
+    //[Tooltip("Lower value allows faster rotation??")]
+    //[SerializeField] private float smoothDamp;
+    //[SerializeField] private Rigidbody rb;
 
     private List<FlockAgent> cohesionNeighbours = new List<FlockAgent>();
     private List<FlockAgent> avoidanceNeighbours = new List<FlockAgent>();
     private List<FlockAgent> alignmentNeighbours = new List<FlockAgent>();
     private Flock assignedFlock;
-    private Vector3 curVel;
-    [SerializeField] private float speed;
+    //private Vector3 curVel;
+    //[SerializeField] private float speed;
 
-
-    public void AssignFlock(Flock flock)
-    {
-        assignedFlock = flock;
-    }
 
     [Tooltip("Execute flocking behaviour.")]
-    public void MoveAgent()
+    public override void Move()
     {
         // Gravitate towards seen neighbours
         FindNeighbours();
@@ -34,10 +29,13 @@ public class FlockAgent : MonoBehaviour
         Vector3 avoidanceVector = CalcAvoidanceVector() * assignedFlock.avoidanceWeight;
         // Go the same direction as neighbours
         Vector3 alignmentVector = CalcAlignmentVector() * assignedFlock.alignmentWeight;
-        // Home in on target (aka player)
-        Vector3 targetVector = CalcTargetVector() * assignedFlock.targetWeight;
         // Avoid obstacles
-        Vector3 obstacleVecNormal = CalcObstacleVector() * assignedFlock.obstacleWeight;
+        bool obstructed;
+        Vector3 obstacleVecNormal = CalcObstacleVector(out obstructed) * assignedFlock.obstacleWeight;
+        // Home in on target if there's nothing in the way (aka player)
+        Vector3 targetVector = Vector3.zero;
+        if(!obstructed)
+            targetVector = CalcTargetVector() * assignedFlock.targetWeight;
 
         // move
         Vector3 moveVector = cohesionVector + avoidanceVector + alignmentVector + targetVector + obstacleVecNormal;
@@ -45,6 +43,18 @@ public class FlockAgent : MonoBehaviour
         moveVector = Vector3.SmoothDamp(transform.forward, moveVector, ref curVel, smoothDamp);
         rb.transform.forward = moveVector;
         rb.MovePosition(transform.position + moveVector * Time.deltaTime);
+    }
+
+    [Tooltip("Where this unit wants to go.")]
+    public override GameObject target 
+    { 
+        get { return assignedFlock.target; } 
+    }
+
+
+    public void AssignFlock(Flock flock)
+    {
+        assignedFlock = flock;
     }
 
     private void FindNeighbours()
@@ -168,7 +178,7 @@ public class FlockAgent : MonoBehaviour
         return (assignedFlock.target.transform.position - transform.position).normalized;
     }
 
-    private Vector3 CalcObstacleVector()
+    private Vector3 CalcObstacleVector(out bool obstructed)
     {
         // Zero vector will prevent any effects
         Vector3 obstacleVector = Vector3.zero;
@@ -181,7 +191,10 @@ public class FlockAgent : MonoBehaviour
         {
             // Push Agent's move vector in the direction of the obstacle's collsion point normal vector
             obstacleVector = seenObstacle.normal;
+            obstructed = true;
         }
+        else
+            obstructed = false;
 
         return obstacleVector;
     }

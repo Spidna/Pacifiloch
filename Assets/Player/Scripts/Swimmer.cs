@@ -60,10 +60,7 @@ public class Swimmer : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!keyboardControls)
-            movementVR();
-        else
-            ;// movementKeyboard();
+        movementVR();
 
     }
     private void Update()

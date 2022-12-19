@@ -137,7 +137,7 @@ MonoBehaviour:
   _atkRange: 0
   _moveSpeed: 0
   _turnSpeed: 0
-  myRigidbody: {fileID: 5299446999655685361}
+  moveScript: {fileID: 5299446999655685367}
   _targetP: {fileID: 0}
 --- !u!114 &5299446999655685367
 MonoBehaviour:
@@ -151,6 +151,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ebe6bc29c2427f4f96e00b668337427, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  smoothDamp: 2
+  rb: {fileID: 5299446999655685361}
+  speed: 2
   angleFOV: 270
   smoothDamp: 2
   rb: {fileID: 5299446999655685361}

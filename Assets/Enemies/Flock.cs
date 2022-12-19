@@ -93,10 +93,10 @@ public class Flock : MonoBehaviour ///10:00
 
     private void FixedUpdate() // TODO: Call checks for unit death
     {
-        for (int i = 0; i < allAgents.Count; i++)
-        {
-            allAgents[i].MoveAgent();
-        }
+        //for (int i = 0; i < allAgents.Count; i++)
+        //{
+        //    allAgents[i].Move();
+        //}
     }
 
     private void GenerateUnits(int spawnCount, Vector3 _spawnBounds)
