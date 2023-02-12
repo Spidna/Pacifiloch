@@ -16,6 +16,12 @@ public class GenEnemy : MonoBehaviour
     [Header("References")]
     [Tooltip("Abstraction, My movement style")]
     [SerializeField] private WildMovement moveScript;
+    [Tooltip("Abstraction, My attacks")]
+    [SerializeField] private List<AbAttack> myAttacks;
+    [Tooltip("Weighting for attack likelihood")]
+    [SerializeField] private List<float> atkWeights;
+    [Tooltip("Sum of atkWeights")]
+    [SerializeField] private float weightSum;
 
     [Tooltip("Distance from targetP")]
     private float targetDist = 0f;
@@ -29,24 +35,39 @@ public class GenEnemy : MonoBehaviour
     // Decide what to do
     void decisions()
     {
-        // If the target is close enough to attack, then do so.
+        // Calculate distance to target
         targetDist = (transform.position - moveScript.target.transform.position).magnitude;
-        if (_atkRange >= targetDist)
-        {
-            doAtkSimple();
-        }
-        // If not in range to attack, move towards target
-        else
-        {
+
+        // Check attack triggers and return false if an attack is used
+        if (pickAtk(moveScript.assignedFlock.atkSync))
+            // If unable to attack, move towards target
             moveScript.Move();
-        }
     }
 
-    // Initiate attack sequence
-    void doAtkSimple()
+    // Initiate attack sequence, return true if movement behaviour should continue
+    private float weightProgress;
+    bool pickAtk(AtkSync _atkSync)
     {
+        weightProgress = 0f;
         // !TODO!
         // Implement attack animation and trigger
+
+        // Check which attack should be triggered
+        for (int i = 0; i < atkWeights.Count; i++)
+        {
+            // Check AtkSync time to sync attack patterns
+            weightProgress += atkWeights[i];
+            if (_atkSync.t < weightProgress)
+            {
+                // Check if attack should activate
+                if()
+                {
+
+                }
+            }
+        }/// Check which attack should be triggered
+
+        return false;
     }
 
     // Update is called once per frame

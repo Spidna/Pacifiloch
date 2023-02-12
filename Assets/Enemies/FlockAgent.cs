@@ -14,7 +14,7 @@ public class FlockAgent : WildMovement
     private List<FlockAgent> cohesionNeighbours = new List<FlockAgent>();
     private List<FlockAgent> avoidanceNeighbours = new List<FlockAgent>();
     private List<FlockAgent> alignmentNeighbours = new List<FlockAgent>();
-    private Flock assignedFlock;
+    //public Flock assignedFlock;
     //private Vector3 curVel;
     //[SerializeField] private float speed;
 

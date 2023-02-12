@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 5299446999655685363}
   - component: {fileID: 5299446999655685362}
   - component: {fileID: 5299446999655685367}
+  - component: {fileID: 3206550202550450888}
   m_Layer: 7
   m_Name: ClownFish
   m_TagString: WildTarget
@@ -65,6 +66,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 9219832041805445613}
   - {fileID: 3066400782754756383}
   - {fileID: 813255069068843416}
   m_Father: {fileID: 0}
@@ -132,13 +134,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 153d922cf65c7864a943695ed05c8680, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hp: 0
-  _maxHp: 0
-  _atkRange: 0
-  _moveSpeed: 0
-  _turnSpeed: 0
+  _hp: 10
+  _maxHp: 10
+  _atkRange: 5
   moveScript: {fileID: 5299446999655685367}
-  _targetP: {fileID: 0}
+  myAttacks:
+  - {fileID: 3206550202550450888}
+  atkWeights:
+  - 1
 --- !u!114 &5299446999655685367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,13 +154,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ebe6bc29c2427f4f96e00b668337427, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  smoothDamp: 2
+  smoothDamp: 3
   rb: {fileID: 5299446999655685361}
-  speed: 2
+  speed: 3
   angleFOV: 270
-  smoothDamp: 2
+--- !u!114 &3206550202550450888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4992806598980247998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 919f33d5a195d124db94f32b3d3ac422, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   rb: {fileID: 5299446999655685361}
-  speed: 2
+  progressTime: 0
+  magnitude: 8
 --- !u!1 &5083116909951435039
 GameObject:
   m_ObjectHideFlags: 0
@@ -251,7 +266,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5621006401989114628}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &2767671165103608497
 SkinnedMeshRenderer:
@@ -313,6 +328,37 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.000101095065, y: 0.01957978, z: -0.000084286556}
     m_Extent: {x: 0.008075255, y: 0.033742815, z: 0.018946454}
   m_DirtyAABB: 0
+--- !u!1 &5648413862628781893
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9219832041805445613}
+  m_Layer: 7
+  m_Name: HelperScriptsUSELESS
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9219832041805445613
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5648413862628781893}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5621006401989114628}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6097265207362120757
 GameObject:
   m_ObjectHideFlags: 0
@@ -407,7 +453,7 @@ Transform:
   - {fileID: 616329878655561255}
   - {fileID: 316999907264157155}
   m_Father: {fileID: 5621006401989114628}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6617761560944812827
 GameObject:

@@ -60,13 +60,11 @@ public class Flock : MonoBehaviour ///10:00
     [SerializeField] private int spawnSize; // TODO: update to use a list of spawn locations
     public List<FlockAgent> allAgents { get; set; }
 
-    [Header("Other")]
-    [Tooltip("The thing that the flock attacks/avoids")]
-    // TODO: update to have a list of targets in the event of multiplayer or 'substitutes'
-    [SerializeField] private GameObject _target;
-    [Tooltip("Tag used to find target(s)")]
-    [SerializeField] private string _targetTag;
-    public GameObject target { get { return _target; } }
+    [Header("Synced values")]
+    [Tooltip("Values that all members of the flock share")]
+    public AtkSync atkSync;
+
+    public GameObject target { get { return atkSync._target; } }
     /* Quick example of how LayerMask works:
       // Bit shift the index of the layer (8) to get a bit mask
         int layerMask = 1 << 8;
@@ -75,7 +73,7 @@ public class Flock : MonoBehaviour ///10:00
         // But instead we want to collide against everything except layer 8. The ~ operator does this, it inverts a bitmask.
         layerMask = ~layerMask;
      */
-    [Tooltip("Which layer(s) are obstacles. DOESN'T LIVE UPDATE")]
+    [Tooltip("Which layer(s) are obstacles. UPDATES AT START()")]
     [SerializeField] private int _obstacleLayerMask;
     public int obstacleLayerMask { get { return _obstacleLayerMask; } }
 
@@ -97,6 +95,7 @@ public class Flock : MonoBehaviour ///10:00
         //{
         //    allAgents[i].Move();
         //}
+        atkSync.t += Time.deltaTime;
     }
 
     private void GenerateUnits(int spawnCount, Vector3 _spawnBounds)
@@ -117,17 +116,17 @@ public class Flock : MonoBehaviour ///10:00
     private void FindTarget()
     {
         // Find possible targets
-        GameObject[] targetArray = GameObject.FindGameObjectsWithTag(_targetTag);
+        GameObject[] targetArray = GameObject.FindGameObjectsWithTag(atkSync._targetTag);
 
         // Since we should only have 1 possible target so far, throw an error if there's multiple
         //TODO: ammend this to a list so we can choose a target instead
         if (targetArray.Length != 1)
         {
-            Debug.LogError("Incorrect number of targets with tag: " + _targetTag + " - " + targetArray.Length
+            Debug.LogError("Incorrect number of targets with tag: " + atkSync._targetTag + " - " + targetArray.Length
                 + ". Where targets should only be 1.");
             Debug.Break();
         }
-        _target = targetArray[0];
+        atkSync._target = targetArray[0];
     }
 
 }

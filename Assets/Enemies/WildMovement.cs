@@ -6,11 +6,14 @@ using UnityEngine;
 public abstract class WildMovement : MonoBehaviour
 {
     [Tooltip("Lower value allows faster rotation??")]
-    protected float smoothDamp;
-    [Tooltip("My Regidbody")]
-    protected Rigidbody rb;
+    [SerializeField] protected float smoothDamp;
+    [Tooltip("My Rigidbody")]
+    [SerializeField] protected Rigidbody rb;
     [Tooltip("How fast I move")]
-    protected float speed;
+    [SerializeField] protected float speed;
+
+    public Flock assignedFlock;
+
 
     protected Vector3 curVel;
 
