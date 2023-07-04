@@ -7,24 +7,26 @@ public class GenEnemy : MonoBehaviour
 {
     [Header("Personal stats")]
     [Tooltip("Current hitpoints")]
-    [SerializeField] private float _hp;
+    [SerializeField] protected float _hp;
     [Tooltip("Maximum hitpoints")]
-    [SerializeField] private float _maxHp;
+    [SerializeField] protected float _maxHp;
     [Tooltip("Range to trigger attack from")]
-    [SerializeField] private float _atkRange;
+    [SerializeField] protected float _atkRange;
 
     [Header("References")]
     [Tooltip("Abstraction, My movement style")]
-    [SerializeField] private WildMovement moveScript;
+    [SerializeField] protected WildMovement moveScript;
     [Tooltip("Abstraction, My attacks")]
-    [SerializeField] private List<AbAttack> myAttacks;
+    [SerializeField] protected List<AbAttack> myAttacks;
+    [Tooltip("Abstraction, attack In Progress")]
+    [SerializeField] protected AbAttack atkIP;
     [Tooltip("Weighting for attack likelihood")]
-    [SerializeField] private List<float> atkWeights;
+    [SerializeField] protected List<float> atkWeights;
     [Tooltip("Sum of atkWeights")]
-    [SerializeField] private float weightSum;
+    [SerializeField] protected float weightSum;
 
     [Tooltip("Distance from targetP")]
-    private float targetDist = 0f;
+    protected float targetDist = 0f;
 
     // Start is called before the first frame update
     void Start()
@@ -36,16 +38,30 @@ public class GenEnemy : MonoBehaviour
     void decisions()
     {
         // Calculate distance to target
-        targetDist = (transform.position - moveScript.target.transform.position).magnitude;
+        targetDist = (transform.position - moveScript.assignedFlock.target.transform.position).magnitude;
 
-        // Check attack triggers and return false if an attack is used
-        if (pickAtk(moveScript.assignedFlock.atkSync))
-            // If unable to attack, move towards target
-            moveScript.Move();
+        // If an attack is in progress, continue its behaviour
+        if (atkIP != null)
+        {
+            if (atkIP.atk(Time.deltaTime))
+            {
+
+            }
+        }
+        // No attack in progress: Check if an attack should be executed
+        else
+        {
+            // Check attack triggers and recieve false if an attack is used
+            if (pickAtk(moveScript.assignedFlock.atkSync))
+            {
+                // If unable to attack, move towards target
+                moveScript.Move();
+            }
+        }
     }
 
-    // Initiate attack sequence, return true if movement behaviour should continue
-    private float weightProgress;
+    // Initiate attack sequence, return false if movement behaviour should continue
+    protected float weightProgress;
     bool pickAtk(AtkSync _atkSync)
     {
         weightProgress = 0f;
@@ -59,15 +75,24 @@ public class GenEnemy : MonoBehaviour
             weightProgress += atkWeights[i];
             if (_atkSync.t < weightProgress)
             {
-                // Check if attack should activate
-                if()
+                // Check if attack should based on cd, range, etc
+                if (myAttacks[i].atk(Time.deltaTime))
                 {
-
+                    // Set attackInProgress so next frame the attack
+                    // behaviour can continue, bypassing pickAtk()
+                    atkIP = myAttacks[i];
+                    return false; // If attack went off, exit and return false
+                }
+                else
+                {
+                    // If attack can't activate, exit and return true
+                    // so movement can resume
+                    return true;
                 }
             }
         }/// Check which attack should be triggered
 
-        return false;
+        return true;
     }
 
     // Update is called once per frame

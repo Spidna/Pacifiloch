@@ -18,6 +18,15 @@ public class FlockAgent : WildMovement
     //private Vector3 curVel;
     //[SerializeField] private float speed;
 
+    private void Start()
+    {
+        if (assignedFlock == null)
+        {
+            Debug.Log("ERR: FlockAgent exists in scene without a Flock"
+                + this);
+            assignedFlock = new Flock();
+        }
+    }
 
     [Tooltip("Execute flocking behaviour.")]
     public override void Move()
@@ -45,11 +54,11 @@ public class FlockAgent : WildMovement
         rb.MovePosition(transform.position + moveVector * Time.deltaTime);
     }
 
-    [Tooltip("Where this unit wants to go.")]
-    public override GameObject target 
-    { 
-        get { return assignedFlock.target; } 
-    }
+    //[Tooltip("Where this unit wants to go.")]
+    //public override GameObject target 
+    //{ 
+    //    get { return assignedFlock.target; } 
+    //}
 
 
     public void AssignFlock(Flock flock)
@@ -175,6 +184,10 @@ public class FlockAgent : WildMovement
     // Go towards target, typically the player
     private Vector3 CalcTargetVector()
     {
+
+        print("target: " + assignedFlock.target);
+        Debug.Break();
+
         return (assignedFlock.target.transform.position - transform.position).normalized;
     }
 

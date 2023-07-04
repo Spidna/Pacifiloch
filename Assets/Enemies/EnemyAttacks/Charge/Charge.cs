@@ -16,16 +16,23 @@ public class Charge : AbAttack
     private AbStage execute;
     private AbStage recoil;
 
-    private void Start()
+    private void Awake()
     {
+        cooldown = new Cooldown();
         windup = new Charge1Windup();
         execute = new Charge2Execute();
         recoil = new Charge3Recoil();
+
+        progressTime = 0f;
+        curAtkStage = cooldown;
     }
 
-    public override bool atk(ref AbAttack myStuff, float time)
+    // Return true if attack went off, false if it shouldn't
+    public override bool atk(float dTime)
     {
-        addTime(time);
+        addTime(dTime);
+
+        curAtkStage.call(this);
 
         return true;
     }
@@ -33,7 +40,7 @@ public class Charge : AbAttack
     // Force the attack into the begining of Recoil.
     public override bool cancelFull()
     {
-        atkStage = recoil;
+        curAtkStage = recoil;
         resetProgress();
 
         return true;
@@ -42,7 +49,7 @@ public class Charge : AbAttack
     // Put the attack on Cooldown and stop execution.
     public override bool cancelHard()
     {
-        atkStage = cooldown;
+        curAtkStage = cooldown;
         resetProgress();
 
         return true;

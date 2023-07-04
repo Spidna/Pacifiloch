@@ -19,6 +19,6 @@ public abstract class WildMovement : MonoBehaviour
 
     public abstract void Move();
 
-    private GameObject _target;
-    public abstract GameObject target { get; }
+    //private GameObject _target;
+    //public abstract GameObject target { get; }
 }

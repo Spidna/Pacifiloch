@@ -294,7 +294,7 @@ GameObject:
   - component: {fileID: 367424585}
   m_Layer: 6
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 419385456094870383, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -492,6 +492,7 @@ MonoBehaviour:
   _atkRange: 0
   moveScript: {fileID: 0}
   myAttacks: []
+  atkIP: {fileID: 0}
   atkWeights: []
   weightSum: 0
 --- !u!1 &468011211
@@ -1148,7 +1149,8 @@ MonoBehaviour:
   targetWeight: 2.2
   _obstacleWeight: 9
   spawnSize: 20
-  atkSync: {fileID: 0}
+  atkSync: {fileID: 11400000, guid: 984e475fd81eed24396e41d9835a7f64, type: 2}
+  target: {fileID: 0}
   _obstacleLayerMask: 10
 --- !u!4 &1048109211
 Transform:
@@ -2223,7 +2225,7 @@ GameObject:
   - component: {fileID: 1799192690}
   m_Layer: 6
   m_Name: Camera Offset
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

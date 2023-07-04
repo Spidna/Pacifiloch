@@ -64,7 +64,7 @@ public class Flock : MonoBehaviour ///10:00
     [Tooltip("Values that all members of the flock share")]
     public AtkSync atkSync;
 
-    public GameObject target { get { return atkSync._target; } }
+    public GameObject target;// { get { return atkSync._target; } }
     /* Quick example of how LayerMask works:
       // Bit shift the index of the layer (8) to get a bit mask
         int layerMask = 1 << 8;
@@ -126,7 +126,8 @@ public class Flock : MonoBehaviour ///10:00
                 + ". Where targets should only be 1.");
             Debug.Break();
         }
-        atkSync._target = targetArray[0];
+        target = targetArray[0];
+
     }
 
 }
