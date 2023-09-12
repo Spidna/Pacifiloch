@@ -34,7 +34,9 @@ public class GenEnemy : MonoBehaviour
 
     }
 
-    // Decide what to do
+    /// <summary>
+    /// Decide between movement, attacking, or idling behaviours
+    /// </summary>
     void decisions()
     {
         // Calculate distance to target
@@ -62,6 +64,13 @@ public class GenEnemy : MonoBehaviour
 
     // Initiate attack sequence, return false if movement behaviour should continue
     protected float weightProgress;
+    /// <summary>
+    /// Pick an attack based on a collective metronome
+    /// </summary>
+    /// <param name="_atkSync">
+    /// Information that allows schooling enemies to act together
+    /// </param>
+    /// <returns>true if successful, false if illegal</returns>
     bool pickAtk(AtkSync _atkSync)
     {
         weightProgress = 0f;

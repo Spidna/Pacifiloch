@@ -98,6 +98,8 @@ public class Flock : MonoBehaviour ///10:00
         atkSync.t += Time.deltaTime;
     }
 
+    /// <param name="spawnCount">number of units to spawn</param>
+    /// <param name="_spawnBounds">size of area which can spawn in</param>
     private void GenerateUnits(int spawnCount, Vector3 _spawnBounds)
     {
         allAgents = new List<FlockAgent>();
