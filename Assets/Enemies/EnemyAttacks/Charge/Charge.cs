@@ -12,9 +12,10 @@ public class Charge : AbAttack
     //float progressTime;
 
     // Abstage Cooldown has no behaviours so its already defined in parent class
-    private AbStage windup;
-    private AbStage execute;
-    private AbStage recoil;
+    // TODO: possibly move this group to AbAttack, these are abstractions anyway
+    protected AbStage windup;
+    protected AbStage execute;
+    protected AbStage recoil;
 
     private void Awake()
     {
@@ -24,7 +25,7 @@ public class Charge : AbAttack
         execute = new Charge2Execute();
         recoil = new Charge3Recoil();
 
-        // Start at cooldown, 3 seconds to prevent premature fires
+        // Start at cooldown, to prevent premature fires
         progressTime = 0f;
         curAtkStage = cooldown;
 
@@ -49,11 +50,76 @@ public class Charge : AbAttack
     /// <returns>true if attack went off, false if it shouldn't</returns>
     public override bool atk(float dTime)
     {
-        addTime(dTime);
+        addTime(dTime); // figure out cooldown means illegal vs other stage progress
 
-        curAtkStage.call(this);
+        bool stageDone = curAtkStage.call(this);
+        // TODO: Move this nested if statement into the AtkStage classes to improve optimization
+        if(stageDone) // If finished with current attack stage, begin next stage
+        {
+            if(curAtkStage == cooldown)
+            { 
+            }
+            else if(curAtkStage == windup)
+            { 
+            }
+            else if(curAtkStage == execute)
+            { 
+            }
+            else if(curAtkStage == recoil)
+            { 
+            }
+            else
+            {
+                Debug.Log(this + "curAtkStage has invalid value of: "
+                    + curAtkStage);
+            }
+        }
+        else if (curAtkStage == cooldown)
+        {
+            return false;
+        }
+
 
         return true;
+    }
+
+    public override void startWindup()
+    {
+        // Start Windup
+        animator.SetBool("Swimming", false);
+        animator.SetTrigger("ChargeWindup");
+
+        resetProgressTime();
+        curAtkStage = windup;
+        curAtkStage.call(this);
+    }
+    public override void startExecution()
+    {
+        // BRING THE PAIN
+        animator.SetBool("Swimming", false);
+        animator.SetTrigger("Charging");
+        setOffenceBox(0, true);
+
+        curAtkStage = execute;
+        curAtkStage.call(this);
+    }
+    public override void startRecoil()
+    {
+        // Recover from attack
+        animator.SetBool("Swimming", false);
+        animator.SetTrigger("ChargeRecoil");
+        setOffenceBox(0, false);
+
+        curAtkStage = recoil;
+        curAtkStage.call(this);
+    }
+    public override void startCooldown()
+    {
+        // Start cooldown
+        animator.SetBool("Swimming", true);
+
+        curAtkStage = cooldown;
+        curAtkStage.call(this);
     }
 
     /// <summary>
@@ -62,8 +128,8 @@ public class Charge : AbAttack
     /// <returns>true if successful</returns>
     public override bool cancelFull()
     {
-        curAtkStage = recoil;
-        resetProgress();
+        startRecoil();
+        disableOffenceBoxes();
 
         return true;
     }
@@ -74,8 +140,8 @@ public class Charge : AbAttack
     /// <returns>true if successful</returns>
     public override bool cancelHard()
     {
-        curAtkStage = cooldown;
-        resetProgress();
+        startCooldown();
+        disableOffenceBoxes();
 
         return true;
     }

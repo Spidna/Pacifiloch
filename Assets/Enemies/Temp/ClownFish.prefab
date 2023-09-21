@@ -140,7 +140,7 @@ MonoBehaviour:
   moveScript: {fileID: 5299446999655685367}
   myAttacks:
   - {fileID: 3206550202550450888}
-  atkIP: {fileID: 3206550202550450888}
+  atkIP: {fileID: 0}
   atkWeights:
   - 1
   weightSum: 0
@@ -176,11 +176,12 @@ MonoBehaviour:
   rb: {fileID: 5299446999655685361}
   offenceBox:
   - {fileID: 1134186610575911670}
+  animator: {fileID: 5299446999655685363}
   progressTime: 0
-  maxWindup: 0
-  maxExecute: 0
-  maxRecoil: 0
-  maxCooldown: 0
+  maxWindup: 2
+  maxExecute: 2
+  maxRecoil: 2
+  maxCooldown: 6
   magnitude: 8
 --- !u!1 &5053829656539349955
 GameObject:

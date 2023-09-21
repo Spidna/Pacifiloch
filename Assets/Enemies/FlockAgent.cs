@@ -185,9 +185,6 @@ public class FlockAgent : WildMovement
     private Vector3 CalcTargetVector()
     {
 
-        print("target: " + assignedFlock.target);
-        Debug.Break();
-
         return (assignedFlock.target.transform.position - transform.position).normalized;
     }
 

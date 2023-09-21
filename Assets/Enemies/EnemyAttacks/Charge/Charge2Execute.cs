@@ -4,9 +4,20 @@ using UnityEngine;
 
 public class Charge2Execute : AbStage
 {
+    /// <summary>
+    /// Abstraction which can be used to call whatever attack stage is in progress
+    /// </summary>
+    /// <param name="myStuff">Information from attack who calls this</param>
+    /// <returns>false if on cooldown, true otherwise</returns>
     public override bool call(AbAttack myStuff)
     {
-        myStuff.setOffenceBox(0, true);
+        // Check if the attack is done
+        if (myStuff.getProgressTime() > myStuff.getMaxExecute())
+        {
+            myStuff.startRecoil();
+
+            return true;
+        }
 
         //Vector3 chargeForce = myStuff.rb.transform.forward * 
 

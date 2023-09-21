@@ -41,7 +41,7 @@ public class GenEnemy : MonoBehaviour
     {
         // Calculate distance to target
         targetDist = (transform.position - moveScript.assignedFlock.target.transform.position).magnitude;
-
+        // TODO 
         // If an attack is in progress, continue its behaviour
         if (atkIP != null)
         {
