@@ -4,6 +4,7 @@ using UnityEngine;
 
 public abstract class AbAttack : MonoBehaviour
 {
+    // TODO Maybe move most references into atksync maybe
     [Header("References")]
     [SerializeField] public Rigidbody rb;
     [SerializeField] protected Collider[] offenceBox;
@@ -25,6 +26,7 @@ public abstract class AbAttack : MonoBehaviour
 
     // Stored here because cooldown doesn't do anything
     [SerializeField] protected AbStage cooldown;
+    [SerializeField] protected AbStage search0;
 
     [Header("Values")]
     [Tooltip("Time remaining on current attack stage")]
@@ -53,8 +55,31 @@ public abstract class AbAttack : MonoBehaviour
     { return curAtkStage; }
     [Tooltip("How far the attack travels")]
     [SerializeField] protected float magnitude;
+    public float getMagnitude() { return magnitude; }
+    public float getRange() { return magnitude * 0.8f; }
 
-    public abstract bool atk(float dTime);
+    [Tooltip("How fast the attack moves the user")]
+    public float advanceSpeed;
+    [Tooltip("How fast the user turns while in Windup")]
+    public float targettingTurnRate;
+    [Tooltip("How aggressive the user homes in on the target during execution")]
+    public float homingTurnRate;
+
+
+    //[SerializeField] protected Vector3 curTarget;
+    //public Vector3 getTarget()
+    //{ return curTarget; }
+    //public void updateTarget(Vector3 target)
+    //{ curTarget = target; }
+    //public void updateTarget(GameObject target)
+    //{ curTarget = target.transform.position; }
+
+    /// <summary>
+    /// Attempt execution of current stage of attack sequence
+    /// </summary>
+    /// <param name="dTime">accepted DeltaTime</param>
+    /// <returns>true if attack went off, false if it shouldn't</returns>
+    public abstract bool atk(float dTime, Vector3 target);
 
     /// <summary>
     /// Accepts DeltaTime to add to progressTime
@@ -68,17 +93,19 @@ public abstract class AbAttack : MonoBehaviour
     /// Force the attack into the begining of Recoil.
     /// </summary>
     /// <returns></returns>
-    public abstract bool cancelHard();
+    public abstract bool cancelHard(Vector3 target);
 
     /// <summary>
     /// Put the attack on Cooldown and stop execution.
     /// </summary>
     /// <returns></returns>
-    public abstract bool cancelFull();
+    public abstract bool cancelFull(Vector3 target);
 
-    public abstract void startWindup();
-    public abstract void startExecution();
-    public abstract void startRecoil();
-    public abstract void startCooldown();
+    public abstract void startWindup(Vector3 target);
+    public abstract void startExecution(Vector3 target);
+    public abstract void startRecoil(Vector3 target);
+    public abstract void startCooldown(Vector3 target);
+
+    public abstract bool atkQuery(GameObject target);
 
 }

@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Charge2Execute : AbStage
+public class Charge0 : AbStage
 {
     /// <summary>
-    /// CHAAARGE!!
+    /// Check if attack is in range and similar checks
     /// </summary>
     /// <param name="myStuff">Information from attack who calls this</param>
     /// <param name="dTime">Update progress of atk</param>
@@ -13,23 +13,17 @@ public class Charge2Execute : AbStage
     /// <returns>false if on cooldown, true otherwise</returns>
     public override bool call(AbAttack myStuff, float dTime, Vector3 target)
     {
-        // added add dTime here to prevent Cooldown overflow
-        myStuff.addTime(dTime);
+        // If target is within range, start the Widnup stage
+        float distance = Vector3.Distance(myStuff.rb.transform.position, target);
 
-        // Check if the attack is done
-        if (myStuff.getProgressTime() > myStuff.getMaxExecute())
+        if (distance < myStuff.getRange())
         {
-            myStuff.startRecoil();
-
+            myStuff.startWindup(target);
+            // Attack is a go
             return true;
         }
 
-        //Vector3 chargeForce = myStuff.rb.transform.forward * 
-
-        //myStuff.rb.AddForce();
-
-
-        // Not on Cooldown, let the move slector know
-        return true;
+        // Out of range, so no attack
+        return false;
     }
 }

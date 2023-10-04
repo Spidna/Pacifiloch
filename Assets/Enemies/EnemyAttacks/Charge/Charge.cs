@@ -8,6 +8,7 @@ using UnityEngine;
 
 public class Charge : AbAttack
 {
+
     //[SerializeField] public Rigidbody rb;
     //float progressTime;
 
@@ -21,6 +22,7 @@ public class Charge : AbAttack
     {
         // Assign functions for automatic calling
         cooldown = new Cooldown();
+        search0 = new Charge0();
         windup = new Charge1Windup();
         execute = new Charge2Execute();
         recoil = new Charge3Recoil();
@@ -48,42 +50,19 @@ public class Charge : AbAttack
     /// </summary>
     /// <param name="dTime">accepted DeltaTime</param>
     /// <returns>true if attack went off, false if it shouldn't</returns>
-    public override bool atk(float dTime)
+    public override bool atk(float dTime, Vector3 target)
     {
-        addTime(dTime); // figure out cooldown means illegal vs other stage progress
+        // TODO RELOCATE ADDTIME INTO EACH ATKSTAGE EXCEPT 0
+        addTime(dTime);
+        // True means attack progressed this tick
+        // False means attack is unusable
+        bool wentOff = curAtkStage.call(this, dTime, target);
+        
 
-        bool stageDone = curAtkStage.call(this);
-        // TODO: Move this nested if statement into the AtkStage classes to improve optimization
-        if(stageDone) // If finished with current attack stage, begin next stage
-        {
-            if(curAtkStage == cooldown)
-            { 
-            }
-            else if(curAtkStage == windup)
-            { 
-            }
-            else if(curAtkStage == execute)
-            { 
-            }
-            else if(curAtkStage == recoil)
-            { 
-            }
-            else
-            {
-                Debug.Log(this + "curAtkStage has invalid value of: "
-                    + curAtkStage);
-            }
-        }
-        else if (curAtkStage == cooldown)
-        {
-            return false;
-        }
-
-
-        return true;
+        return wentOff;
     }
 
-    public override void startWindup()
+    public override void startWindup(Vector3 target)
     {
         // Start Windup
         animator.SetBool("Swimming", false);
@@ -91,9 +70,9 @@ public class Charge : AbAttack
 
         resetProgressTime();
         curAtkStage = windup;
-        curAtkStage.call(this);
+        curAtkStage.call(this, 0f, target);
     }
-    public override void startExecution()
+    public override void startExecution(Vector3 target)
     {
         // BRING THE PAIN
         animator.SetBool("Swimming", false);
@@ -101,9 +80,9 @@ public class Charge : AbAttack
         setOffenceBox(0, true);
 
         curAtkStage = execute;
-        curAtkStage.call(this);
+        curAtkStage.call(this, 0f, target);
     }
-    public override void startRecoil()
+    public override void startRecoil(Vector3 target)
     {
         // Recover from attack
         animator.SetBool("Swimming", false);
@@ -111,24 +90,24 @@ public class Charge : AbAttack
         setOffenceBox(0, false);
 
         curAtkStage = recoil;
-        curAtkStage.call(this);
+        curAtkStage.call(this, 0f, target);
     }
-    public override void startCooldown()
+    public override void startCooldown(Vector3 target)
     {
         // Start cooldown
         animator.SetBool("Swimming", true);
 
         curAtkStage = cooldown;
-        curAtkStage.call(this);
+        curAtkStage.call(this, 0f, target);
     }
 
     /// <summary>
     /// Force the attack into the begining of Recoil
     /// </summary>
     /// <returns>true if successful</returns>
-    public override bool cancelFull()
+    public override bool cancelFull (Vector3 target)
     {
-        startRecoil();
+        startRecoil(target);
         disableOffenceBoxes();
 
         return true;
@@ -138,11 +117,16 @@ public class Charge : AbAttack
     /// Put the attack on Cooldown and stop execution
     /// </summary>
     /// <returns>true if successful</returns>
-    public override bool cancelHard()
+    public override bool cancelHard(Vector3 target)
     {
-        startCooldown();
+        startCooldown(target);
         disableOffenceBoxes();
 
         return true;
+    }
+
+    public override bool atkQuery(GameObject target)
+    {
+        throw new System.NotImplementedException();
     }
 }
