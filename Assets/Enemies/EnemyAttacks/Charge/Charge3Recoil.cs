@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "Data",
+    menuName = "ScriptableObjects/Abstage/Charge/Recoil", order = 4)]
 public class Charge3Recoil : AbStage
 {
     /// <summary>

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "Data",
+    menuName = "ScriptableObjects/Abstage/Cooldown", order = 1)]
 public class Cooldown : AbStage
 {
     /// <summary>

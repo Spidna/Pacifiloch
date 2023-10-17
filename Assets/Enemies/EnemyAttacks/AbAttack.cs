@@ -27,7 +27,8 @@ public abstract class AbAttack : MonoBehaviour
     // Stored here because cooldown doesn't do anything
     [SerializeField] protected AbStage cooldown;
     [SerializeField] protected AbStage search0;
-
+    [Tooltip("windup, execution, recoil, cooldown")]
+    [SerializeField] public AbStage curAtkStage;
     [Header("Values")]
     [Tooltip("Time remaining on current attack stage")]
     [SerializeField] public float progressTime;
@@ -49,10 +50,6 @@ public abstract class AbAttack : MonoBehaviour
     [SerializeField] protected float maxCooldown;
     public float getMaxCooldown() { return maxCooldown; }
 
-    [Tooltip("windup, execution, recoil, cooldown")]
-    [SerializeField] protected AbStage curAtkStage;
-    public AbStage getCurAtkStage()
-    { return curAtkStage; }
     [Tooltip("How far the attack travels")]
     [SerializeField] protected float magnitude;
     public float getMagnitude() { return magnitude; }

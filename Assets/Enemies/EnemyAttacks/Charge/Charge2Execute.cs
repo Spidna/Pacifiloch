@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "Data",
+    menuName = "ScriptableObjects/Abstage/Charge/Execute", order = 3)]
 public class Charge2Execute : AbStage
 {
     /// <summary>
@@ -19,7 +21,7 @@ public class Charge2Execute : AbStage
         // Check if the attack is done
         if (myStuff.getProgressTime() > myStuff.getMaxExecute())
         {
-            myStuff.startRecoil();
+            myStuff.startRecoil(target);
 
             return true;
         }

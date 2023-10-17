@@ -43,8 +43,8 @@ public class GenEnemy : MonoBehaviour
     /// </summary>
     void decisions()
     {
-        // Calculate distance to target
-        targetDist = (transform.position - getTarget().transform.position).magnitude;
+        // TODO REMOVE Calculate distance to target
+        //targetDist = (transform.position - getTarget().transform.position).magnitude;
         // TODO FIX ATKIP
         // If an attack is in progress, continue its behaviour
         if (atkIP != null)
@@ -59,7 +59,7 @@ public class GenEnemy : MonoBehaviour
         else
         {
             // Check attack triggers and recieve false if an attack is used
-            if (pickAtk(moveScript.assignedFlock.atkSync))
+            if (!pickAtk(moveScript.assignedFlock.atkSync))
             {
                 // If unable to attack, move towards target
                 moveScript.Move();
@@ -79,39 +79,38 @@ public class GenEnemy : MonoBehaviour
     bool pickAtk(AtkSync _atkSync)
     {
         weightProgress = 0f;
-        // !TODO!
-        // Implement attack animation and trigger
+        //Check which attack should be triggered
+        for (int i = 0; i < atkWeights.Count; i++)
+        {
+            // Check AtkSync time to sync attack patterns
+            weightProgress += atkWeights[i];
+            if (_atkSync.t < weightProgress)
+            {
+                // Check if attack should go based on cd, range, etc
+                if (myAttacks[i].atk(Time.deltaTime, getTarget().transform.position))
+                {
+                    // Set attackInProgress so next frame the attack
+                    // behaviour can continue, bypassing pickAtk()
+                    atkIP = myAttacks[i];
+                    Debug.Log(this);
+                    Debug.Break();
+                    return true; // If attack went off, exit and return true
+                }
+                else
+                {
+                    // If attack can't activate, exit and return false
+                    // so movement can resume
+                    return false;
+                }
+            }
+        }/// Check which attack should be triggered
 
+        // atksync.t has surpassed weightprogress, so reset it
+        // Unfortunately this will be reset redundantly for each enemy in a flock /shrugs
+        // shouldn't cause any issues tho?
+        _atkSync.t = 0f;
 
-
-
-
-        // I KINDA HATE THIS IMA START IT OVER
-        // Check which attack should be triggered
-        //for (int i = 0; i < atkWeights.Count; i++)
-        //{
-        //    // Check AtkSync time to sync attack patterns
-        //    weightProgress += atkWeights[i];
-        //    if (_atkSync.t < weightProgress)
-        //    {
-        //        // Check if attack should go based on cd, range, etc
-        //        if (myAttacks[i].atk(Time.deltaTime))
-        //        {
-        //            // Set attackInProgress so next frame the attack
-        //            // behaviour can continue, bypassing pickAtk()
-        //            atkIP = myAttacks[i];
-        //            return false; // If attack went off, exit and return false
-        //        }
-        //        else
-        //        {
-        //            // If attack can't activate, exit and return true
-        //            // so movement can resume
-        //            return true;
-        //        }
-        //    }
-        //}/// Check which attack should be triggered
-
-        return true;
+        return false;
     }
 
     // Update is called once per frame

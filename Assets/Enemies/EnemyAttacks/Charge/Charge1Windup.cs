@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "Data",
+    menuName = "ScriptableObjects/Abstage/Charge/Windup", order = 2)]
 public class Charge1Windup : AbStage
 {
     /// <summary>

@@ -14,9 +14,11 @@ public class Charge : AbAttack
 
     // Abstage Cooldown has no behaviours so its already defined in parent class
     // TODO: possibly move this group to AbAttack, these are abstractions anyway
-    protected AbStage windup;
-    protected AbStage execute;
-    protected AbStage recoil;
+    [Header("References")]
+    [SerializeField] protected AbStage search;
+    [SerializeField] protected AbStage windup;
+    [SerializeField] protected AbStage execute;
+    [SerializeField] protected AbStage recoil;
 
     private void Awake()
     {

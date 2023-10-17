@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class AbStage // :Monobehaviour
+//[CreateAssetMenu(fileName = "Data",
+//    menuName = "ScriptableObjects/Abstage", order = 2)]
+public abstract class AbStage : ScriptableObject
 {
     /// <summary>
     /// Abstraction which can be used to call whatever attack stage is in progress
