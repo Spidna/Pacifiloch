@@ -92,8 +92,6 @@ public class GenEnemy : MonoBehaviour
                     // Set attackInProgress so next frame the attack
                     // behaviour can continue, bypassing pickAtk()
                     atkIP = myAttacks[i];
-                    Debug.Log(this);
-                    Debug.Break();
                     return true; // If attack went off, exit and return true
                 }
                 else

@@ -12,22 +12,20 @@ public class Charge : AbAttack
     //[SerializeField] public Rigidbody rb;
     //float progressTime;
 
-    // Abstage Cooldown has no behaviours so its already defined in parent class
-    // TODO: possibly move this group to AbAttack, these are abstractions anyway
-    [Header("References")]
-    [SerializeField] protected AbStage search;
-    [SerializeField] protected AbStage windup;
-    [SerializeField] protected AbStage execute;
-    [SerializeField] protected AbStage recoil;
-
+    // TODO maybe move Awake() to AbAttack
     private void Awake()
     {
-        // Assign functions for automatic calling
-        cooldown = new Cooldown();
-        search0 = new Charge0();
-        windup = new Charge1Windup();
-        execute = new Charge2Execute();
-        recoil = new Charge3Recoil();
+        // Be sure AtkStages are defined
+        if (cooldown == null)
+            Debug.LogWarning("Cooldown AtkStage undefined.");
+        if (search == null)
+            Debug.LogWarning("Search AtkStage undefined.");
+        if (windup == null)
+            Debug.LogWarning("Windup AtkStage undefined.");
+        if (execute == null)
+            Debug.LogWarning("Execute AtkStage undefined.");
+        if (recoil == null)
+            Debug.LogWarning("Recoil AtkStage undefined.");
 
         // Start at cooldown, to prevent premature fires
         progressTime = 0f;
@@ -42,7 +40,7 @@ public class Charge : AbAttack
             }
             catch (System.NullReferenceException)
             {
-                Debug.Log("ERR: " + this + " missing offenceBox" + i);
+                Debug.LogWarning("ERR: " + this + " missing offenceBox" + i);
             }
         }
     }
@@ -64,6 +62,15 @@ public class Charge : AbAttack
         return wentOff;
     }
 
+    public override void startSearch(Vector3 target)
+    {
+        // Check if attack can reach target
+        animator.SetBool("Swimming", true);
+
+        resetProgressTime();
+        curAtkStage = search;
+        curAtkStage.call(this, 0f, target);
+    }
     public override void startWindup(Vector3 target)
     {
         // Start Windup

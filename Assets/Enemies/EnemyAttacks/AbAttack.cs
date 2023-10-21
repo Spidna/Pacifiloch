@@ -26,7 +26,13 @@ public abstract class AbAttack : MonoBehaviour
 
     // Stored here because cooldown doesn't do anything
     [SerializeField] protected AbStage cooldown;
-    [SerializeField] protected AbStage search0;
+    [Tooltip("Check if attack is within range and such.")]
+    [SerializeField] protected AbStage search;
+    [Tooltip("Telegraphing.")]
+    [SerializeField] protected AbStage windup;
+    [Tooltip("The event that deals damage")]
+    [SerializeField] protected AbStage execute;
+    [SerializeField] protected AbStage recoil;
     [Tooltip("windup, execution, recoil, cooldown")]
     [SerializeField] public AbStage curAtkStage;
     [Header("Values")]
@@ -98,6 +104,7 @@ public abstract class AbAttack : MonoBehaviour
     /// <returns></returns>
     public abstract bool cancelFull(Vector3 target);
 
+    public abstract void startSearch(Vector3 target);
     public abstract void startWindup(Vector3 target);
     public abstract void startExecution(Vector3 target);
     public abstract void startRecoil(Vector3 target);

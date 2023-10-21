@@ -12,7 +12,7 @@ public class Cooldown : AbStage
     /// <param name="myStuff">Information from attack who calls this</param>
     /// <param name="dTime">Update progress of atk</param>
     /// <param name="target">Unused half the time cuz target unimportant when breathing</param>
-    /// <returns>false if on cooldown, true otherwise</returns>
+    /// <returns>true if attack went off, false if it shouldn't</returns>
     public override bool call(AbAttack myStuff, float dTime, Vector3 target)
     {
         // added add dTime here to prevent Cooldown overflow
@@ -22,12 +22,10 @@ public class Cooldown : AbStage
         if (myStuff.getProgressTime() > myStuff.getMaxCooldown())
         {
             // End Cooldown
-            return true;
+            myStuff.startSearch(target);
         }
-        else // Still on cooldown
-        {
-            // Nothing happens while on Cooldown so let the move selector know
-            return false;
-        }
+
+        // Nothing happens while on Cooldown so let the move selector know
+        return false;
     }
 }

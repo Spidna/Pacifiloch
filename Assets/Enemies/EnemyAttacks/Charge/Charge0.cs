@@ -17,7 +17,6 @@ public class Charge0 : AbStage
     {
         // If target is within range, start the Widnup stage
         float distance = Vector3.Distance(myStuff.rb.transform.position, target);
-        Debug.Log("distance " + distance);
         if (distance < myStuff.getRange())
         {
             myStuff.startWindup(target);
