@@ -17,7 +17,7 @@ public class Charge2Execute : AbStage
     {
         // added add dTime here to prevent Cooldown overflow
         myStuff.addTime(dTime);
-
+        Debug.Log("ProgressTime " + myStuff.getProgressTime());
         // Check if the attack is done
         if (myStuff.getProgressTime() > myStuff.getMaxExecute())
         {
@@ -27,11 +27,12 @@ public class Charge2Execute : AbStage
         }
         else
         {
+            Debug.Log("Forward " + myStuff.rb.transform.forward);
             // Charge at target
-            Vector3 moveVector = (myStuff.rb.transform.position - target).normalized;
-            moveVector = moveVector.normalized * myStuff.advanceSpeed * -1f;
-            myStuff.rb.transform.forward = moveVector;
-            myStuff.rb.MovePosition(myStuff.transform.position + moveVector * Time.deltaTime);
+            //Vector3 moveVector = (myStuff.rb.transform.position - target).normalized;
+            //moveVector = moveVector.normalized * myStuff.advanceSpeed * -1f;
+            //myStuff.rb.transform.forward = moveVector;
+            //myStuff.rb.MovePosition(myStuff.transform.position + moveVector * Time.deltaTime);
         }
 
         //Vector3 chargeForce = myStuff.rb.transform.forward * 

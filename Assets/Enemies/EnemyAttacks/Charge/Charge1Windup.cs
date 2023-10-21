@@ -23,12 +23,12 @@ public class Charge1Windup : AbStage
             myStuff.startExecution(target);
         }
         else
-        { 
+        {
             // Turn towards the target
-            Vector3 moveVector = (myStuff.rb.transform.position - target).normalized;
-            moveVector = moveVector.normalized * myStuff.targettingTurnRate;
-            myStuff.rb.transform.forward = moveVector;
-            myStuff.rb.MovePosition(myStuff.transform.position + moveVector * Time.deltaTime);
+            Vector3 targetDirection = target - myStuff.rb.position;
+            float step = myStuff.targettingTurnRate * dTime;
+            Quaternion newRot = Quaternion.LookRotation(targetDirection);
+            myStuff.rb.MoveRotation(Quaternion.Slerp(myStuff.rb.rotation, newRot, step));
         }
 
         // Not on Cooldown, let the move slector know

@@ -84,6 +84,7 @@ public class Charge : AbAttack
     public override void startExecution(Vector3 target)
     {
         // BRING THE PAIN
+        resetProgressTime();
         animator.SetBool("Swimming", false);
         animator.SetTrigger("Charging");
         setOffenceBox(0, true);
@@ -94,6 +95,7 @@ public class Charge : AbAttack
     public override void startRecoil(Vector3 target)
     {
         // Recover from attack
+        resetProgressTime();
         animator.SetBool("Swimming", false);
         animator.SetTrigger("ChargeRecoil");
         setOffenceBox(0, false);
@@ -104,6 +106,7 @@ public class Charge : AbAttack
     public override void startCooldown(Vector3 target)
     {
         // Start cooldown
+        resetProgressTime();
         animator.SetBool("Swimming", true);
 
         curAtkStage = cooldown;
