@@ -28,7 +28,10 @@ public class Charge2Execute : AbStage
         else
         {
             // Charge at target
-
+            Vector3 moveVector = (myStuff.rb.transform.position - target).normalized;
+            moveVector = moveVector.normalized * myStuff.advanceSpeed * -1f;
+            myStuff.rb.transform.forward = moveVector;
+            myStuff.rb.MovePosition(myStuff.transform.position + moveVector * Time.deltaTime);
         }
 
         //Vector3 chargeForce = myStuff.rb.transform.forward * 
