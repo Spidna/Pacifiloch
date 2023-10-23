@@ -348,7 +348,7 @@ MonoBehaviour:
   dragForce: 0.5
   minForce: 0
   minStroke: 0
-  handTurnEnabled: 0
+  handTurnEnabled: 1
   keyboardControls: 0
   turnSpeed: {x: 1, y: 1}
   degreeClamp: {x: 90, y: 80}
@@ -1123,7 +1123,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1048109210
 MonoBehaviour:
   m_ObjectHideFlags: 0

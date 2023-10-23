@@ -55,7 +55,7 @@ public class Swimmer : MonoBehaviour
     { // Force rigidbody settings to prevent problems
         rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
-        rb.constraints = RigidbodyConstraints.FreezeRotation;
+        //rb.constraints = RigidbodyConstraints.FreezeRotation;
     }
 
     private void FixedUpdate()
@@ -118,7 +118,7 @@ public class Swimmer : MonoBehaviour
     {
         // Only make a stroke if the player is holding down the buttons to do so
         if (leftStrokeButton.action.IsPressed()
-            || rightStrokeButton.action.IsPressed()) // Switch to &&
+            && rightStrokeButton.action.IsPressed()) // Switch to &&
         {
             // Collect velocity data from controllers
             var leftHandVel = leftControllerVel.action.ReadValue<Vector3>();
@@ -152,37 +152,21 @@ public class Swimmer : MonoBehaviour
             {
                 turnVel = leftControllerVel.action.ReadValue<Vector3>();
                 controllerPos = leftControllerPos.action.ReadValue<Vector3>();
-                // zero y axis
-                turnVel.y = 0f;
+                //turnVel.y = 0f; // Zero out the vertical component to prevent pitch (tilting).
 
-                /*cameraT = Camera.main.transform;
-                Vector3 camRight = cameraT.right;
-                camRight.y = 0f;
-                float direction = Vector3.Dot(camRight, turnVel);
+                // Normalize the turn velocity vector to ensure consistent torque.
 
-                _rigidbody.AddForceAtPosition(-direction * camRight, leftControllerPos.action.ReadValue<Vector3>());
-                */
-                // Change rotational vector if hand is behind player?
+                // Calculate the torque to apply for yaw rotation (around the y-axis).
+                float yawTorque = turnVel.x * controllerPos.z * -1f;
 
-                // calc X velocity vs Z relative position
-                float xTorque = -turnVel.x * controllerPos.z;
-                // calc Z velocity vs X relative position
-                float zTorque = -turnVel.z * controllerPos.x;
-                // Make rotation vector
-                Vector3 totalTorque = new Vector3(0f, turnVel.x - turnVel.z, 0f);
-
-                //rb.AddTorque(totalTorque);
+                // Apply the torque to the Rigidbody for yaw rotation.
+                rb.AddTorque(Vector3.up * yawTorque, ForceMode.VelocityChange);
             }
             else if (rightStrokeButton.action.IsPressed())
             {
                 turnVel = rightControllerVel.action.ReadValue<Vector3>();
+                // Handle turning with the right hand if needed.
             }
-            else
-            { // if neither button is pushed, the player isn't trying to turn
-                return;
-            }
-
-            turnVel *= -1f;
 
         }
     }
