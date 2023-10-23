@@ -15,17 +15,23 @@ public class Cooldown : AbStage
     /// <returns>true if attack went off, false if it shouldn't</returns>
     public override bool call(AbAttack myStuff, float dTime, Vector3 target)
     {
-        // added add dTime here to prevent Cooldown overflow
-        myStuff.addTime(dTime);
-
-
-        if (myStuff.getProgressTime() > myStuff.getMaxCooldown())
-        {
-            // End Cooldown
-            myStuff.startSearch(target);
-        }
-
         // Nothing happens while on Cooldown so let the move selector know
         return false;
+    }
+
+    /// <summary>
+    /// This will be called within AttackStage to make Cooldown continue counting. 
+    /// </summary>
+    /// <param name="myStuff">Information from attack who calls this</param>
+    /// <param name="dTime">Update progress of Cooldown</param>
+    public override void countCD(AbAttack myStuff, float dTime)
+    {
+        myStuff.addTime(dTime);
+
+        // End Cooldown if we surpass cooldown timer to avoid overflow
+        if (myStuff.getProgressTime() > myStuff.getMaxCooldown())
+        {
+            myStuff.startSearch();
+        }
     }
 }

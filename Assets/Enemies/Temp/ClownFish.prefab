@@ -178,21 +178,20 @@ MonoBehaviour:
   - {fileID: 1134186610575911670}
   animator: {fileID: 5299446999655685363}
   cooldown: {fileID: 11400000, guid: 31536007cb1897f448ada6615e7e49e2, type: 2}
-  search0: {fileID: 11400000, guid: 7001744f54412ec449078943e715635c, type: 2}
+  search: {fileID: 11400000, guid: 7001744f54412ec449078943e715635c, type: 2}
+  windup: {fileID: 11400000, guid: 78b90d7e866728b4cb7e2d8d0a56185e, type: 2}
+  execute: {fileID: 11400000, guid: 4fbf4b7817bb1be41bfdc0d6660889b9, type: 2}
+  recoil: {fileID: 11400000, guid: d438f9c2d5aa82c42a6d294211973755, type: 2}
   curAtkStage: {fileID: 11400000, guid: 7001744f54412ec449078943e715635c, type: 2}
   progressTime: 0
   maxWindup: 2
   maxExecute: 2
   maxRecoil: 2
-  maxCooldown: 6
+  maxCooldown: 18
   magnitude: 8
-  advanceSpeed: 9
+  advanceSpeed: 18
   targettingTurnRate: 4
   homingTurnRate: 0
-  search: {fileID: 11400000, guid: 7001744f54412ec449078943e715635c, type: 2}
-  windup: {fileID: 11400000, guid: 78b90d7e866728b4cb7e2d8d0a56185e, type: 2}
-  execute: {fileID: 11400000, guid: 4fbf4b7817bb1be41bfdc0d6660889b9, type: 2}
-  recoil: {fileID: 11400000, guid: d438f9c2d5aa82c42a6d294211973755, type: 2}
 --- !u!1 &5053829656539349955
 GameObject:
   m_ObjectHideFlags: 0

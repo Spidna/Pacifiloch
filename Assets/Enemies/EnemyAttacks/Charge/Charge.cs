@@ -45,6 +45,12 @@ public class Charge : AbAttack
         }
     }
 
+    private void Update()
+    {
+        // Increment CD counter, function does nothing if off Cooldown
+        curAtkStage.countCD(this, Time.deltaTime);
+    }
+
     /// <summary>
     /// Attempt execution of current stage of attack sequence
     /// </summary>
@@ -52,8 +58,6 @@ public class Charge : AbAttack
     /// <returns>true if attack went off, false if it shouldn't</returns>
     public override bool atk(float dTime, Vector3 target)
     {
-        // TODO RELOCATE ADDTIME INTO EACH ATKSTAGE EXCEPT 0
-        addTime(dTime);
         // True means attack progressed this tick
         // False means attack is unusable
         bool wentOff = curAtkStage.call(this, dTime, target);
@@ -62,16 +66,15 @@ public class Charge : AbAttack
         return wentOff;
     }
 
-    public override void startSearch(Vector3 target)
+    public override void startSearch()
     {
         // Check if attack can reach target
         animator.SetBool("Swimming", true);
 
         resetProgressTime();
         curAtkStage = search;
-        curAtkStage.call(this, 0f, target);
     }
-    public override void startWindup(Vector3 target)
+    public override void startWindup()
     {
         // Start Windup
         animator.SetBool("Swimming", false);
@@ -79,9 +82,8 @@ public class Charge : AbAttack
 
         resetProgressTime();
         curAtkStage = windup;
-        curAtkStage.call(this, 0f, target);
     }
-    public override void startExecution(Vector3 target)
+    public override void startExecution()
     {
         // BRING THE PAIN
         resetProgressTime();
@@ -90,9 +92,8 @@ public class Charge : AbAttack
         setOffenceBox(0, true);
 
         curAtkStage = execute;
-        curAtkStage.call(this, 0f, target);
     }
-    public override void startRecoil(Vector3 target)
+    public override void startRecoil()
     {
         // Recover from attack
         resetProgressTime();
@@ -101,25 +102,23 @@ public class Charge : AbAttack
         setOffenceBox(0, false);
 
         curAtkStage = recoil;
-        curAtkStage.call(this, 0f, target);
     }
-    public override void startCooldown(Vector3 target)
+    public override void startCooldown()
     {
         // Start cooldown
         resetProgressTime();
         animator.SetBool("Swimming", true);
 
         curAtkStage = cooldown;
-        curAtkStage.call(this, 0f, target);
     }
 
     /// <summary>
     /// Force the attack into the begining of Recoil
     /// </summary>
     /// <returns>true if successful</returns>
-    public override bool cancelFull (Vector3 target)
+    public override bool cancelFull ()
     {
-        startRecoil(target);
+        startRecoil();
         disableOffenceBoxes();
 
         return true;
@@ -129,16 +128,11 @@ public class Charge : AbAttack
     /// Put the attack on Cooldown and stop execution
     /// </summary>
     /// <returns>true if successful</returns>
-    public override bool cancelHard(Vector3 target)
+    public override bool cancelHard()
     {
-        startCooldown(target);
+        startCooldown();
         disableOffenceBoxes();
 
         return true;
-    }
-
-    public override bool atkQuery(GameObject target)
-    {
-        throw new System.NotImplementedException();
     }
 }

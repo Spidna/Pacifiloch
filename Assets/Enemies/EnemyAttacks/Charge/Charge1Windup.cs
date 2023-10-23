@@ -20,7 +20,7 @@ public class Charge1Windup : AbStage
         // If windup is complete, move on to Execution
         if (myStuff.getProgressTime() > myStuff.getMaxWindup())
         {
-            myStuff.startExecution(target);
+            myStuff.startExecution();
         }
         else
         {

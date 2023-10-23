@@ -20,7 +20,9 @@ public class Charge3Recoil : AbStage
 
         if (myStuff.getProgressTime() > myStuff.getMaxRecoil())
         {
-            myStuff.startCooldown(target);
+            myStuff.startCooldown();
+            // Return false cuz we're back on Cooldown
+            return false;
         }
 
         // Not on Cooldown, let the move slector know

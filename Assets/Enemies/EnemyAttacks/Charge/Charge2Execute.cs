@@ -17,28 +17,19 @@ public class Charge2Execute : AbStage
     {
         // added add dTime here to prevent Cooldown overflow
         myStuff.addTime(dTime);
-        Debug.Log("ProgressTime " + myStuff.getProgressTime());
         // Check if the attack is done
         if (myStuff.getProgressTime() > myStuff.getMaxExecute())
         {
-            myStuff.startRecoil(target);
+            myStuff.startRecoil();
 
             return true;
         }
         else
         {
-            Debug.Log("Forward " + myStuff.rb.transform.forward);
             // Charge at target
-            //Vector3 moveVector = (myStuff.rb.transform.position - target).normalized;
-            //moveVector = moveVector.normalized * myStuff.advanceSpeed * -1f;
-            //myStuff.rb.transform.forward = moveVector;
-            //myStuff.rb.MovePosition(myStuff.transform.position + moveVector * Time.deltaTime);
+            Vector3 force = myStuff.rb.transform.forward * dTime * myStuff.advanceSpeed;
+            myStuff.rb.AddForce(force, ForceMode.Impulse);
         }
-
-        //Vector3 chargeForce = myStuff.rb.transform.forward * 
-
-        //myStuff.rb.AddForce();
-
 
         // Not on Cooldown, let the move slector know
         return true;

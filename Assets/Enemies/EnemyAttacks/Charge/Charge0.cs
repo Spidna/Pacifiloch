@@ -19,7 +19,7 @@ public class Charge0 : AbStage
         float distance = Vector3.Distance(myStuff.rb.transform.position, target);
         if (distance < myStuff.getRange())
         {
-            myStuff.startWindup(target);
+            myStuff.startWindup();
             // Attack is a go
             return true;
         }

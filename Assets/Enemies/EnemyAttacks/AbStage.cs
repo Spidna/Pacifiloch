@@ -14,4 +14,15 @@ public abstract class AbStage : ScriptableObject
     /// <param name="target">Unused half the time cuz target unimportant when breathing</param>
     /// <returns>true if successful & continues, false if stage is over</returns>
     public abstract bool call(AbAttack myStuff, float dTime, Vector3 target);
+
+    /// <summary>
+    /// This will be called within AttackStage to make Cooldown continue counting. 
+    /// </summary>
+    /// <param name="myStuff">Information from attack who calls this</param>
+    /// <param name="dTime">Update progress of Cooldown</param>
+    /// <param name="target">Unused half the time cuz target unimportant when breathing</param>
+    public virtual void countCD(AbAttack myStuff, float dTime)
+    { 
+        // Do nothing unless on Cooldown
+    }
 }

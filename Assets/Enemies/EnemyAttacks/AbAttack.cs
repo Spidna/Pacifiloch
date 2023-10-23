@@ -96,20 +96,17 @@ public abstract class AbAttack : MonoBehaviour
     /// Force the attack into the begining of Recoil.
     /// </summary>
     /// <returns></returns>
-    public abstract bool cancelHard(Vector3 target);
+    public abstract bool cancelHard();
 
     /// <summary>
     /// Put the attack on Cooldown and stop execution.
     /// </summary>
     /// <returns></returns>
-    public abstract bool cancelFull(Vector3 target);
+    public abstract bool cancelFull();
 
-    public abstract void startSearch(Vector3 target);
-    public abstract void startWindup(Vector3 target);
-    public abstract void startExecution(Vector3 target);
-    public abstract void startRecoil(Vector3 target);
-    public abstract void startCooldown(Vector3 target);
-
-    public abstract bool atkQuery(GameObject target);
-
+    public abstract void startSearch();
+    public abstract void startWindup();
+    public abstract void startExecution();
+    public abstract void startRecoil();
+    public abstract void startCooldown();
 }
