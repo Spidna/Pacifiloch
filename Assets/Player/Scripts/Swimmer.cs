@@ -6,6 +6,7 @@ public class Swimmer : MonoBehaviour
 {
     [Header("Values")]
     [Tooltip("Base Swim speed")]
+    [Range(0.5f, 2.5f)]
     public float swimForce;
     [Tooltip("How much water slows player")]
     public float dragForce;
@@ -13,15 +14,18 @@ public class Swimmer : MonoBehaviour
     public float minForce;
     [Tooltip("Minimum time between swings to count")]
     public float minStroke;
-
+    [Tooltip("How fast player turns by using hand turning")]
+    [Range(0f, 1f)]
+    public float handTurnSpeed;
     [Tooltip("Players turn with single hand swing")]
     public bool handTurnEnabled;
+
+    // TODO Probably remove this
     [Tooltip("Keyboard or VR controls")]
     public bool keyboardControls;
-
     [Header("Mouse Input controls")]
     [Tooltip("Mouse look sensitivity")]
-    public Vector2 turnSpeed = new Vector2(1, 1);
+    public Vector2 mouseTurnSpeed = new Vector2(1, 1);
     [Tooltip("Maximum rotation from the initial orientation")]
     public Vector2 degreeClamp = new Vector2(90, 80);
     [Tooltip("Invert vertical turning")]
@@ -124,6 +128,10 @@ public class Swimmer : MonoBehaviour
             var leftHandVel = leftControllerVel.action.ReadValue<Vector3>();
             var rightHandVel = rightControllerVel.action.ReadValue<Vector3>();
             Vector3 localVel = leftHandVel + rightHandVel;
+            Debug.Log(localVel);
+            localVel.x *= Mathf.Abs(localVel.x);
+            localVel.z *= Mathf.Abs(localVel.z);
+            localVel.y *= Mathf.Abs(localVel.y);
             localVel *= -1f; // Invert cuz we push against water to move the other way
 
             // Make stroke if strong enough
@@ -141,33 +149,41 @@ public class Swimmer : MonoBehaviour
 
     // !!! TODO
     // !!! TODO
-    void checkTurn() // !!TODO: Use Vector3.SmoothDamp(myTransform.forward, target, ref curVel, smoothDamp)
+    void checkTurn()
     {
-        if (handTurnEnabled) // if this is even enabled
+        if (handTurnEnabled)
         {
-            // Get rotational velocity from active hand
+            // Get rotational velocity from the active hand
             Vector3 turnVel;
             Vector3 controllerPos;
+
             if (leftStrokeButton.action.IsPressed())
             {
                 turnVel = leftControllerVel.action.ReadValue<Vector3>();
                 controllerPos = leftControllerPos.action.ReadValue<Vector3>();
-                //turnVel.y = 0f; // Zero out the vertical component to prevent pitch (tilting).
-
-                // Normalize the turn velocity vector to ensure consistent torque.
-
-                // Calculate the torque to apply for yaw rotation (around the y-axis).
-                float yawTorque = turnVel.x * controllerPos.z * -1f;
-
-                // Apply the torque to the Rigidbody for yaw rotation.
-                rb.AddTorque(Vector3.up * yawTorque, ForceMode.VelocityChange);
+                turn(turnVel, controllerPos);
             }
             else if (rightStrokeButton.action.IsPressed())
             {
                 turnVel = rightControllerVel.action.ReadValue<Vector3>();
-                // Handle turning with the right hand if needed.
+                controllerPos = rightControllerPos.action.ReadValue<Vector3>();
+                turn(turnVel, controllerPos);
             }
-
         }
+
     }
+    void turn(Vector3 turnVel, Vector3 controllerPos)
+    {
+        turnVel.y = 0f; // Zero out the vertical component to prevent pitch (tilting).
+
+        // Calculate the torque to apply for yaw rotation (around the y-axis).
+        float xTorque = -turnVel.x * controllerPos.z;
+        float zTorque = turnVel.z * controllerPos.x;
+        float yawTorque = xTorque + zTorque;
+        yawTorque *= handTurnSpeed;
+
+        // Apply the torque to the Rigidbody for yaw rotation.
+        rb.AddTorque(Vector3.up * yawTorque, ForceMode.VelocityChange);
+    }
+
 }
