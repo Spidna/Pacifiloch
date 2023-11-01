@@ -1,15 +1,14 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.XR;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Swimmer : MonoBehaviour
 {
     [Header("Values")]
     [Tooltip("Base Swim speed")]
-    [Range(0.5f, 2.5f)]
+    [Range(0f, 2f)]
     public float swimForce;
-    [Tooltip("How much water slows player")]
-    public float dragForce;
     [Tooltip("Minimum swing power needed to move")]
     public float minForce;
     [Tooltip("Minimum time between swings to count")]
@@ -40,6 +39,8 @@ public class Swimmer : MonoBehaviour
     bool cursourVisible;
 
     [Header("References")]
+    [SerializeField] UnityEngine.XR.InputDevice leftController;
+    [SerializeField] UnityEngine.XR.InputDevice rightController;
     [SerializeField] InputActionReference leftStrokeButton;
     [SerializeField] InputActionReference rightStrokeButton;
     [SerializeField] InputActionReference leftControllerPos;
@@ -48,6 +49,8 @@ public class Swimmer : MonoBehaviour
     [SerializeField] InputActionReference rightControllerVel;
     [SerializeField] Transform trackingRef;
 
+    [SerializeField] private GameObject swimDoppler;
+    [SerializeField] private AudioSource swimSFX;
     [SerializeField] private Rigidbody rb;
 
     private Vector3 worldVel;
@@ -60,19 +63,34 @@ public class Swimmer : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
         //rb.constraints = RigidbodyConstraints.FreezeRotation;
+
+        // Establish haptic nodes
+        try
+        {
+            leftController = InputDevices.GetDeviceAtXRNode(XRNode.LeftHand);
+            rightController = InputDevices.GetDeviceAtXRNode(XRNode.RightHand);
+        }
+        catch
+        {
+            Debug.Log("ERR missing controller XRNode.");
+        }
     }
 
     private void FixedUpdate()
     {
+        // Check for VR movement inputs
         movementVR();
 
+        // Make a noise based on the velocity of swimmer
+        swimSound();
     }
+
     private void Update()
     {
     }
-    /*
-    * Input controls for keyboard
-    */
+    /// <summary>
+    ///Input controls for keyboard
+    /// </summary>
     /*void movementKeyboard()
     {
         // Get WASD input (or customized thereof)
@@ -87,10 +105,40 @@ public class Swimmer : MonoBehaviour
     }*/
 
 
-    /*
-    * Input controls for VR controllers
-    */
 
+    private float preSpeed = 0f;
+    /// <summary>
+    /// Calculate doppler for swimming
+    /// </summary>
+    private void swimSound()
+    {
+        Vector3 swimVelocity = rb.velocity;
+        float curSpeed = swimVelocity.magnitude;
+
+        // When accelerating, put the swimDoppler in front of player's movement
+        if (preSpeed < curSpeed)
+        {
+            swimDoppler.transform.position = swimVelocity * 0.3f;
+        }
+        // When decelerating, drag it behind the player's movement
+        else
+        {
+            swimDoppler.transform.Translate(swimVelocity * -0.1f);
+        }
+        // Faster = higher pitch & volume
+        Debug.Log("CurSpeed: " + curSpeed);
+        swimSFX.volume += 0.1f;
+        swimSFX.volume *= 2f;
+        // TODO if volume greater than target set to target
+        // TODO potentially drop pitch changes if interferes with doppler?
+        swimSFX.pitch = 1f;
+
+        preSpeed = curSpeed;
+    }
+
+    /// <summary>
+    /// Input controls for VR
+    /// </summary>
     void movementVR()
     {
         cooldown += Time.fixedDeltaTime;
@@ -103,35 +151,27 @@ public class Swimmer : MonoBehaviour
                 // check if player is going to turn only if they aren't moving
                 checkTurn();
             }
-
         }
-
-        // Apply drag if player is moving
-        /*playerMagnitude = pVelocity.sqrMagnitude;
-        if (playerMagnitude > 0.01f)
-        {
-            pVelocity -= pVelocity * dragForce;
-        }
-        else if (playerMagnitude != 0f) // or just halt movement (Not in tutorial)
-        {
-            pVelocity *= 0f;
-        }*/
     }
 
+    /// <summary>
+    /// Check if player is making input to translate
+    /// </summary>
+    /// <returns>true if player is trying to move</returns>
     bool checkMotion()
     {
         // Only make a stroke if the player is holding down the buttons to do so
         if (leftStrokeButton.action.IsPressed()
-            && rightStrokeButton.action.IsPressed()) // Switch to &&
+            && rightStrokeButton.action.IsPressed())
         {
             // Collect velocity data from controllers
             var leftHandVel = leftControllerVel.action.ReadValue<Vector3>();
             var rightHandVel = rightControllerVel.action.ReadValue<Vector3>();
             Vector3 localVel = leftHandVel + rightHandVel;
             Debug.Log(localVel);
-            localVel.x *= Mathf.Abs(localVel.x);
-            localVel.z *= Mathf.Abs(localVel.z);
-            localVel.y *= Mathf.Abs(localVel.y);
+            localVel.x *= Mathf.Abs(localVel.x); //* localVel.x;
+            localVel.z *= Mathf.Abs(localVel.z); //* localVel.z;
+            localVel.y *= Mathf.Abs(localVel.y); //* localVel.y;
             localVel *= -1f; // Invert cuz we push against water to move the other way
 
             // Make stroke if strong enough
@@ -139,7 +179,7 @@ public class Swimmer : MonoBehaviour
             {
                 // Convert local velocity into world velocity
                 worldVel = trackingRef.TransformDirection(localVel) * swimForce;
-                rb.AddForce(worldVel * swimForce, ForceMode.Acceleration);
+                rb.AddForce(worldVel, ForceMode.Impulse);
                 cooldown = 0f;
             }
             return true;
@@ -147,8 +187,9 @@ public class Swimmer : MonoBehaviour
         return false;
     }
 
-    // !!! TODO
-    // !!! TODO
+    /// <summary>
+    /// Check if the player is making input to turn.
+    /// </summary>
     void checkTurn()
     {
         if (handTurnEnabled)
@@ -162,19 +203,41 @@ public class Swimmer : MonoBehaviour
                 turnVel = leftControllerVel.action.ReadValue<Vector3>();
                 controllerPos = leftControllerPos.action.ReadValue<Vector3>();
                 turn(turnVel, controllerPos);
+                turnHaptics(turnVel, leftController);
             }
             else if (rightStrokeButton.action.IsPressed())
             {
                 turnVel = rightControllerVel.action.ReadValue<Vector3>();
                 controllerPos = rightControllerPos.action.ReadValue<Vector3>();
                 turn(turnVel, controllerPos);
+                turnHaptics(turnVel, rightController);
             }
         }
 
     }
+
+    /// <summary>
+    /// Gives haptic feedback based on how hard player is swimming
+    /// </summary>
+    /// <param name="turnVel">Velocity of the controller in question</param>
+    /// <param name="controller">Controller to output haptics to</param>
+    void turnHaptics(Vector3 turnVel, UnityEngine.XR.InputDevice controller)
+    {
+        float turnMag;
+        //Haptics
+        turnMag = turnVel.magnitude * 0.03f;
+        controller.SendHapticImpulse(0, turnMag, 0.7f);
+    }
+    /// <summary>
+    /// Do the math to turn the player based on the movement of 1 hand
+    /// </summary>
+    /// <param name="turnVel">Velocity of the controller in question</param>
+    /// <param name="controllerPos">Where the controller is</param>
     void turn(Vector3 turnVel, Vector3 controllerPos)
     {
         turnVel.y = 0f; // Zero out the vertical component to prevent pitch (tilting).
+        turnVel.x *= Mathf.Abs(turnVel.x);
+        turnVel.z *= Mathf.Abs(turnVel.z);
 
         // Calculate the torque to apply for yaw rotation (around the y-axis).
         float xTorque = -turnVel.x * controllerPos.z;
