@@ -16,8 +16,12 @@ public class Swimmer : MonoBehaviour
     [Tooltip("How fast player turns by using hand turning")]
     [Range(0f, 1f)]
     public float handTurnSpeed;
+    [Range(0f, 11f)]
+    public float maxTurnSpeed;
     [Tooltip("Players turn with single hand swing")]
     public bool handTurnEnabled;
+    [Range(0f, 0.4f)]
+    [SerializeField] float volumeFactor;
 
     // TODO Probably remove this
     [Tooltip("Keyboard or VR controls")]
@@ -125,13 +129,18 @@ public class Swimmer : MonoBehaviour
         {
             swimDoppler.transform.Translate(swimVelocity * -0.1f);
         }
-        // Faster = higher pitch & volume
-        Debug.Log("CurSpeed: " + curSpeed);
-        swimSFX.volume += 0.1f;
+        // Fade swimSound in over 3 frames max
+        swimSFX.volume += 0.08f;
         swimSFX.volume *= 2f;
-        // TODO if volume greater than target set to target
+        // Cap that fade in at the target volume
+        float maxVolume = curSpeed * volumeFactor;
+        if (maxVolume > 1f)
+            maxVolume = 1f;
+
+        swimSFX.volume = Mathf.Clamp(swimSFX.volume, 0f, maxVolume);
+
         // TODO potentially drop pitch changes if interferes with doppler?
-        swimSFX.pitch = 1f;
+        //swimSFX.pitch = 1f;
 
         preSpeed = curSpeed;
     }
@@ -168,7 +177,6 @@ public class Swimmer : MonoBehaviour
             var leftHandVel = leftControllerVel.action.ReadValue<Vector3>();
             var rightHandVel = rightControllerVel.action.ReadValue<Vector3>();
             Vector3 localVel = leftHandVel + rightHandVel;
-            Debug.Log(localVel);
             localVel.x *= Mathf.Abs(localVel.x); //* localVel.x;
             localVel.z *= Mathf.Abs(localVel.z); //* localVel.z;
             localVel.y *= Mathf.Abs(localVel.y); //* localVel.y;
@@ -226,8 +234,10 @@ public class Swimmer : MonoBehaviour
         float turnMag;
         //Haptics
         turnMag = turnVel.magnitude * 0.03f;
+        Mathf.Clamp(turnMag, 0f, 1f);
         controller.SendHapticImpulse(0, turnMag, 0.7f);
     }
+    private float maxTest = 0f;
     /// <summary>
     /// Do the math to turn the player based on the movement of 1 hand
     /// </summary>
@@ -236,6 +246,7 @@ public class Swimmer : MonoBehaviour
     void turn(Vector3 turnVel, Vector3 controllerPos)
     {
         turnVel.y = 0f; // Zero out the vertical component to prevent pitch (tilting).
+        // Square velocity to increase exagerate control
         turnVel.x *= Mathf.Abs(turnVel.x);
         turnVel.z *= Mathf.Abs(turnVel.z);
 
@@ -244,6 +255,8 @@ public class Swimmer : MonoBehaviour
         float zTorque = turnVel.z * controllerPos.x;
         float yawTorque = xTorque + zTorque;
         yawTorque *= handTurnSpeed;
+        // Limit rotation speed to prevent sickness
+        yawTorque = Mathf.Clamp(yawTorque, -maxTurnSpeed, maxTurnSpeed);
 
         // Apply the torque to the Rigidbody for yaw rotation.
         rb.AddTorque(Vector3.up * yawTorque, ForceMode.VelocityChange);
