@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR;
+using UnityEngine.XR.Interaction.Toolkit;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Swimmer : MonoBehaviour
@@ -22,6 +23,8 @@ public class Swimmer : MonoBehaviour
     public bool handTurnEnabled;
     [Range(0f, 0.4f)]
     [SerializeField] float volumeFactor;
+    [Range(0f, 0.01f)]
+    [SerializeField] float hapticFactor;
 
     // TODO Probably remove this
     [Tooltip("Keyboard or VR controls")]
@@ -43,8 +46,8 @@ public class Swimmer : MonoBehaviour
     bool cursourVisible;
 
     [Header("References")]
-    [SerializeField] UnityEngine.XR.InputDevice leftController;
-    [SerializeField] UnityEngine.XR.InputDevice rightController;
+    [SerializeField] XRBaseController leftController;
+    [SerializeField] XRBaseController rightController;
     [SerializeField] InputActionReference leftStrokeButton;
     [SerializeField] InputActionReference rightStrokeButton;
     [SerializeField] InputActionReference leftControllerPos;
@@ -68,16 +71,6 @@ public class Swimmer : MonoBehaviour
         rb.useGravity = false;
         //rb.constraints = RigidbodyConstraints.FreezeRotation;
 
-        // Establish haptic nodes
-        try
-        {
-            leftController = InputDevices.GetDeviceAtXRNode(XRNode.LeftHand);
-            rightController = InputDevices.GetDeviceAtXRNode(XRNode.RightHand);
-        }
-        catch
-        {
-            Debug.Log("ERR missing controller XRNode.");
-        }
     }
 
     private void FixedUpdate()
@@ -116,7 +109,7 @@ public class Swimmer : MonoBehaviour
     /// </summary>
     private void swimSound()
     {
-        Vector3 swimVelocity = rb.velocity;
+        Vector3 swimVelocity = rb.velocity + rb.angularVelocity;
         float curSpeed = swimVelocity.magnitude;
 
         // When accelerating, put the swimDoppler in front of player's movement
@@ -163,6 +156,8 @@ public class Swimmer : MonoBehaviour
         }
     }
 
+    // If the player hasn't released both movement buttons, don't turn yet
+    bool disableTurn = false;
     /// <summary>
     /// Check if player is making input to translate
     /// </summary>
@@ -173,6 +168,7 @@ public class Swimmer : MonoBehaviour
         if (leftStrokeButton.action.IsPressed()
             && rightStrokeButton.action.IsPressed())
         {
+            disableTurn = true;
             // Collect velocity data from controllers
             var leftHandVel = leftControllerVel.action.ReadValue<Vector3>();
             var rightHandVel = rightControllerVel.action.ReadValue<Vector3>();
@@ -189,10 +185,19 @@ public class Swimmer : MonoBehaviour
                 worldVel = trackingRef.TransformDirection(localVel) * swimForce;
                 rb.AddForce(worldVel, ForceMode.Impulse);
                 cooldown = 0f;
+
+                // Haptic feedback for input recognition
+                turnHapticsOculus(rightHandVel, rightController);
+                turnHapticsOculus(leftHandVel, leftController);
+
             }
             return true;
         }
-        return false;
+
+        /// If the player hasn't released both movement buttons, don't turn yet
+        if (disableTurn)
+            disableTurn = leftStrokeButton.action.IsPressed() || rightStrokeButton.action.IsPressed();
+        return disableTurn;
     }
 
     /// <summary>
@@ -211,14 +216,14 @@ public class Swimmer : MonoBehaviour
                 turnVel = leftControllerVel.action.ReadValue<Vector3>();
                 controllerPos = leftControllerPos.action.ReadValue<Vector3>();
                 turn(turnVel, controllerPos);
-                turnHaptics(turnVel, leftController);
+                turnHapticsOculus(turnVel, leftController);
             }
             else if (rightStrokeButton.action.IsPressed())
             {
                 turnVel = rightControllerVel.action.ReadValue<Vector3>();
                 controllerPos = rightControllerPos.action.ReadValue<Vector3>();
                 turn(turnVel, controllerPos);
-                turnHaptics(turnVel, rightController);
+                turnHapticsOculus(turnVel, rightController);
             }
         }
 
@@ -229,15 +234,15 @@ public class Swimmer : MonoBehaviour
     /// </summary>
     /// <param name="turnVel">Velocity of the controller in question</param>
     /// <param name="controller">Controller to output haptics to</param>
-    void turnHaptics(Vector3 turnVel, UnityEngine.XR.InputDevice controller)
+    void turnHapticsOculus(Vector3 turnVel, XRBaseController controller)
     {
         float turnMag;
         //Haptics
-        turnMag = turnVel.magnitude * 0.03f;
+        turnMag = turnVel.magnitude;
+        turnMag *= turnMag * hapticFactor;
         Mathf.Clamp(turnMag, 0f, 1f);
-        controller.SendHapticImpulse(0, turnMag, 0.7f);
+        controller.SendHapticImpulse(turnMag, 0.022f);
     }
-    private float maxTest = 0f;
     /// <summary>
     /// Do the math to turn the player based on the movement of 1 hand
     /// </summary>

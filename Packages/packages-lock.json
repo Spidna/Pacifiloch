@@ -1,5 +1,11 @@
 {
   "dependencies": {
+    "com.meta.xr.sdk.haptics": {
+      "version": "file:F:/MajorFolders/Downloads/com.meta.xr.sdk.haptics-1.0.0-beta.7/com.meta.xr.sdk.haptics",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
     "com.unity.collab-proxy": {
       "version": "1.17.2",
       "depth": 0,
