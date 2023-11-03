@@ -27,8 +27,10 @@ public class Swimmer : MonoBehaviour
     [SerializeField] float hapticFactor;
 
     // TODO Probably remove this
+    [Header("Keyboard Controls")]
+    [Tooltip("")]
     [Tooltip("Keyboard or VR controls")]
-    public bool keyboardControls;
+    public bool enableKeyboard;
     [Header("Mouse Input controls")]
     [Tooltip("Mouse look sensitivity")]
     public Vector2 mouseTurnSpeed = new Vector2(1, 1);
