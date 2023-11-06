@@ -28,7 +28,6 @@ public class Swimmer : MonoBehaviour
 
     // TODO Probably remove this
     [Header("Keyboard Controls")]
-    [Tooltip("")]
     [Tooltip("Keyboard or VR controls")]
     public bool enableKeyboard;
     [Header("Mouse Input controls")]
