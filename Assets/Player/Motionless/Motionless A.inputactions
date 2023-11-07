@@ -1,5 +1,5 @@
 {
-    "name": "New Controls",
+    "name": "Motionless A",
     "maps": [
         {
             "name": "Player",
@@ -57,7 +57,7 @@
                 {
                     "name": "up",
                     "id": "610f41c8-df52-4fb2-903e-a5177fe75e36",
-                    "path": "<Keyboard>/q",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "Motionless Controls",
@@ -68,7 +68,7 @@
                 {
                     "name": "down",
                     "id": "12c33bb8-3413-439c-9b23-7aff77ac7280",
-                    "path": "<Keyboard>/e",
+                    "path": "<Keyboard>/ctrl",
                     "interactions": "",
                     "processors": "",
                     "groups": "Motionless Controls",
@@ -244,7 +244,7 @@
                 {
                     "name": "",
                     "id": "4f7d8ed2-324f-4540-a073-108ee540f26d",
-                    "path": "<Keyboard>/space",
+                    "path": "<Keyboard>/shift",
                     "interactions": "",
                     "processors": "",
                     "groups": "Motionless Controls",
