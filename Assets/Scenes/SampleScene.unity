@@ -289,7 +289,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4992806598980247998, guid: 84bb091ee53ed7943a66ecab6c6b8a41, type: 3}
       propertyPath: m_Name
-      value: ClownFish
+      value: Swordwasp
       objectReference: {fileID: 0}
     - target: {fileID: 4992806598980247998, guid: 84bb091ee53ed7943a66ecab6c6b8a41, type: 3}
       propertyPath: m_IsActive
@@ -496,25 +496,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: eee1bc84989e42d49b737c1f00ec9e9a, type: 3}
   m_PrefabInstance: {fileID: 1765176424}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &675976114 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1643417813366370910, guid: d2b67f4b99f100241b13c12640790fdf, type: 3}
-  m_PrefabInstance: {fileID: 1643417814033949164}
-  m_PrefabAsset: {fileID: 0}
---- !u!136 &675976120
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 675976114}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.2
-  m_Height: 0.8
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -656,7 +637,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1048109210
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24000,34 +23981,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 675976117, guid: d2b67f4b99f100241b13c12640790fdf, type: 3}
-      propertyPath: moveSpeed
-      value: 7.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 675976117, guid: d2b67f4b99f100241b13c12640790fdf, type: 3}
-      propertyPath: strokeCap
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 675976117, guid: d2b67f4b99f100241b13c12640790fdf, type: 3}
-      propertyPath: strokePre
-      value: -1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 675976117, guid: d2b67f4b99f100241b13c12640790fdf, type: 3}
-      propertyPath: swimSpeed
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 675976117, guid: d2b67f4b99f100241b13c12640790fdf, type: 3}
-      propertyPath: dragNeutral
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 675976117, guid: d2b67f4b99f100241b13c12640790fdf, type: 3}
-      propertyPath: dragSwimming
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 675976117, guid: d2b67f4b99f100241b13c12640790fdf, type: 3}
-      propertyPath: sprintFactor
-      value: 1.5
-      objectReference: {fileID: 0}
     - target: {fileID: 1643417813366370904, guid: d2b67f4b99f100241b13c12640790fdf, type: 3}
       propertyPath: m_RootOrder
       value: 10
@@ -24075,10 +24028,6 @@ PrefabInstance:
     - target: {fileID: 1643417813366370910, guid: d2b67f4b99f100241b13c12640790fdf, type: 3}
       propertyPath: m_Name
       value: PC-Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 6138594351575156546, guid: d2b67f4b99f100241b13c12640790fdf, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d2b67f4b99f100241b13c12640790fdf, type: 3}

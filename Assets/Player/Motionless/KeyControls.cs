@@ -4,13 +4,21 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody))]
 public class KeyControls : MonoBehaviour
 {
-    [SerializeField] Rigidbody rb;
+    [Header("Components")]
+    [Tooltip("Rigidbody of the player gameobject")]
+    [SerializeField] Rigidbody playerBody;
+    [Tooltip("Transform of the player's Head object")]
+    [SerializeField] Transform head;
+
+    [Header("Movement")]
     [Tooltip("How fast the player character swims normally")]
     [SerializeField][Range(0f, 20f)] float swimSpeed;
+    [Tooltip("Max speed the player can swim at.")]
+    [SerializeField][Range(0f, 100f)] float swimCap;
     [Tooltip("How much speed is gained when sprinting")]
     [SerializeField][Range(0f, 20f)] float sprintFactor;
-    [Tooltip("How many seconds pushing a stroke yields gains")]
-    [SerializeField][Range(0f, 20f)] float strokeCap;
+    [Tooltip("Half of how many seconds pushing a stroke yields gains")]
+    private float strokeCap;
     [Tooltip("How many seconds for a stroke to peak")]
     [SerializeField][Range(0f, -20f)] float strokePre;
     [Tooltip("Seconds spent in this stroke")]
@@ -21,32 +29,43 @@ public class KeyControls : MonoBehaviour
     [SerializeField][Range(0f, 20f)] float dragNeutral;
     [Tooltip("Drag as is reduced while moving")]
     [SerializeField][Range(0f, 20f)] float dragSwimming;
-
-
-    private MotionlessA inputA;
     private Vector3 moveVector = Vector3.zero;
 
+    [Header("Camera Control")]
+    [SerializeField][Range(0f, 100f)] float mouseSensitivity;
+    [Tooltip("Whether we square the mouse delta output to exagerate precision")]
+    [SerializeField] bool mouseSquarePrecision;
+    [Tooltip("Stores x rotation")]
+    private float xRotation = 0f;
+    //[SerializeField][Range(0f, 100f)] float stickSensitivity;
+    //[Tooltip("Whether we square the joystick output to exagerate precision")]
+    //[SerializeField] bool stickSquarePrecision;
 
-    private void FixedUpdate()
-    {
-        swimMovement(moveVector);
-    }
-
+    [Tooltip("Static Input settings file")]
+    private MotionlessA inputA;
 
     void Awake()
-    { 
+    {
         inputA = new MotionlessA();
+
+        // Setup stroke calculations
         strokeOutput = 1f;
         strokeDuration = strokePre;
+        strokeCap = Mathf.Abs(strokePre * -strokePre);
+
     }
     private void OnEnable()
     {
+        // Start listening to inputs or smthn idk
         inputA.Enable();
+        // Activate Movement inputs
         inputA.Player.Movement.performed += OnMovePressed;
         inputA.Player.Movement.canceled += OnMoveRelease;
-
+        // Activate Sprint inputs
         inputA.Player.HardStride.performed += PushingStride;
         inputA.Player.HardStride.canceled += ReleaseStride;
+        // Activate Mouse Look
+        Cursor.lockState = CursorLockMode.Locked;
 
     }
     private void OnDisable()
@@ -57,6 +76,29 @@ public class KeyControls : MonoBehaviour
 
         inputA.Player.HardStride.performed -= PushingStride;
         inputA.Player.HardStride.canceled -= ReleaseStride;
+
+        /// TODO SCRAP THIS
+        Cursor.lockState = CursorLockMode.None;
+
+
+    }
+
+    private void FixedUpdate()
+    {
+        // If strokeDuration is large enough we can assume sprint is being held
+        if (strokeDuration > strokePre)
+        { // So we continue sprint action
+            PushingStride(new InputAction.CallbackContext());
+        }
+
+        swimMovement(moveVector);
+
+    }
+
+    private void Update()
+    {
+        CalculateLook();
+
     }
 
     /// <summary>
@@ -64,7 +106,16 @@ public class KeyControls : MonoBehaviour
     /// </summary>
     private void swimMovement(Vector3 direction)
     {
-        rb.AddForce(moveVector * swimSpeed);
+        Vector3 finalSwim = direction;
+        // Produce swim speed
+        finalSwim *= swimSpeed * strokeOutput;
+        // Ensure swim speed doesn't exceed cap
+        if (finalSwim.magnitude > swimCap)
+        {
+            finalSwim = direction * swimCap;
+        }
+        // Move
+        playerBody.AddForce(finalSwim);
     }
     /// <summary>
     /// Gather input data for movement
@@ -78,7 +129,7 @@ public class KeyControls : MonoBehaviour
         moveVector.y *= Mathf.Abs(moveVector.y);
         moveVector.z *= Mathf.Abs(moveVector.z);
 
-        rb.drag = dragSwimming;
+        playerBody.drag = dragSwimming;
     }
     /// <summary>
     /// Reset input data for movement
@@ -87,15 +138,32 @@ public class KeyControls : MonoBehaviour
     private void OnMoveRelease(InputAction.CallbackContext value)
     {
         moveVector = Vector3.zero;
-        rb.drag = dragNeutral;
+        playerBody.drag = dragNeutral;
     }
+
     /// <summary>
     /// When the player is holding the sprint button
     /// </summary>
     /// <param name="value">Make sure this thing is called</param>
     private void PushingStride(InputAction.CallbackContext value)
     {
+        // Add time to stroke duration
+        strokeDuration += Time.deltaTime;
 
+        // Squared to make gain speed faster, peak, then continue gaining speed with
+        // diminishing returns
+        strokeOutput = strokeDuration * -strokeDuration;
+        //Debug.Log("Squared: " + strokeOutput);
+        // Add strokeCap to set a speed gain floor
+        strokeOutput += strokeCap;
+        //Debug.Log("Cap boost: " + strokeOutput);
+        // Multiply by sprintFactor to control gains
+        strokeOutput *= sprintFactor;
+        //Debug.Log("Sprint: " + strokeOutput);
+        // Add 1 to make sure 1 is the absolute minimum
+        strokeOutput += 1f;
+        // Mitigate losses from holding sprint too long
+        strokeOutput = Mathf.Clamp(strokeOutput, 0.95f, 10f);
     }
     /// <summary>
     /// When the player releases the sprint button
@@ -105,5 +173,19 @@ public class KeyControls : MonoBehaviour
     {
         strokeDuration = strokePre;
         strokeOutput = 1f;
+    }
+
+
+    private void CalculateLook()
+    {
+        Vector2 value = inputA.Player.Turning.ReadValue<Vector2>();
+        value *= mouseSensitivity * Time.deltaTime;
+
+        xRotation -= value.y;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+
+        head.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+
+        playerBody.transform.Rotate(Vector3.up * value.x);
     }
 }

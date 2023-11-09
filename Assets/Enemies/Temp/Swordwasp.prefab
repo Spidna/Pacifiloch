@@ -48,7 +48,7 @@ GameObject:
   - component: {fileID: 5299446999655685367}
   - component: {fileID: 3206550202550450888}
   m_Layer: 7
-  m_Name: ClownFish
+  m_Name: Swordwasp
   m_TagString: WildTarget
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

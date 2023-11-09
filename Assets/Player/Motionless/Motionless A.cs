@@ -62,6 +62,15 @@ public partial class @MotionlessA : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Turning"",
+                    ""type"": ""Value"",
+                    ""id"": ""1b580c7c-bd8f-4470-8790-7c0be98ebe00"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -282,6 +291,28 @@ public partial class @MotionlessA : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Motionless Controls"",
                     ""action"": ""Hard Stride"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""02baf8bc-84d4-4b10-9705-7eb6704977ad"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Motionless Controls"",
+                    ""action"": ""Turning"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""47f43bc0-7a68-4b1a-877f-1b9f591a1174"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Motionless Controls"",
+                    ""action"": ""Turning"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -679,6 +710,7 @@ public partial class @MotionlessA : IInputActionCollection2, IDisposable
         m_Player_MainHandGrab = m_Player.FindAction("Main-Hand Grab", throwIfNotFound: true);
         m_Player_MainHandUse = m_Player.FindAction("Main-Hand Use", throwIfNotFound: true);
         m_Player_HardStride = m_Player.FindAction("Hard Stride", throwIfNotFound: true);
+        m_Player_Turning = m_Player.FindAction("Turning", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigation = m_UI.FindAction("Navigation", throwIfNotFound: true);
@@ -749,6 +781,7 @@ public partial class @MotionlessA : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_MainHandGrab;
     private readonly InputAction m_Player_MainHandUse;
     private readonly InputAction m_Player_HardStride;
+    private readonly InputAction m_Player_Turning;
     public struct PlayerActions
     {
         private @MotionlessA m_Wrapper;
@@ -757,6 +790,7 @@ public partial class @MotionlessA : IInputActionCollection2, IDisposable
         public InputAction @MainHandGrab => m_Wrapper.m_Player_MainHandGrab;
         public InputAction @MainHandUse => m_Wrapper.m_Player_MainHandUse;
         public InputAction @HardStride => m_Wrapper.m_Player_HardStride;
+        public InputAction @Turning => m_Wrapper.m_Player_Turning;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -778,6 +812,9 @@ public partial class @MotionlessA : IInputActionCollection2, IDisposable
                 @HardStride.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHardStride;
                 @HardStride.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHardStride;
                 @HardStride.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHardStride;
+                @Turning.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTurning;
+                @Turning.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTurning;
+                @Turning.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTurning;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -794,6 +831,9 @@ public partial class @MotionlessA : IInputActionCollection2, IDisposable
                 @HardStride.started += instance.OnHardStride;
                 @HardStride.performed += instance.OnHardStride;
                 @HardStride.canceled += instance.OnHardStride;
+                @Turning.started += instance.OnTurning;
+                @Turning.performed += instance.OnTurning;
+                @Turning.canceled += instance.OnTurning;
             }
         }
     }
@@ -878,6 +918,7 @@ public partial class @MotionlessA : IInputActionCollection2, IDisposable
         void OnMainHandGrab(InputAction.CallbackContext context);
         void OnMainHandUse(InputAction.CallbackContext context);
         void OnHardStride(InputAction.CallbackContext context);
+        void OnTurning(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
