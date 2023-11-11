@@ -76,33 +76,15 @@ public class Swimmer : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Check for VR movement inputs
-        movementVR();
-
         // Make a noise based on the velocity of swimmer
         swimSound();
     }
 
     private void Update()
     {
+        // Check for VR movement inputs
+        movementVR();
     }
-    /// <summary>
-    ///Input controls for keyboard
-    /// </summary>
-    /*void movementKeyboard()
-    {
-        // Get WASD input (or customized thereof)
-        Vector3 pForce;
-        pForce.x = Input.GetAxis("Horizontal");
-        pForce.y = Input.GetAxis("Vertical");
-        pForce.z = 0f;
-
-        // Convert local velocity into world velocity
-        Vector3 worldVel = trackingRef.TransformDirection(pForce);
-        rb.AddForce(worldVel * swimForce, ForceMode.Acceleration);
-    }*/
-
-
 
     private float preSpeed = 0f;
     /// <summary>
@@ -183,7 +165,7 @@ public class Swimmer : MonoBehaviour
             if (localVel.sqrMagnitude > minForce * minForce)
             {
                 // Convert local velocity into world velocity
-                worldVel = trackingRef.TransformDirection(localVel) * swimForce;
+                worldVel = trackingRef.TransformDirection(localVel) * swimForce * Time.deltaTime;
                 rb.AddForce(worldVel, ForceMode.Impulse);
                 cooldown = 0f;
 
@@ -260,7 +242,7 @@ public class Swimmer : MonoBehaviour
         float xTorque = -turnVel.x * controllerPos.z;
         float zTorque = turnVel.z * controllerPos.x;
         float yawTorque = xTorque + zTorque;
-        yawTorque *= handTurnSpeed;
+        yawTorque *= handTurnSpeed * Time.deltaTime;
         // Limit rotation speed to prevent sickness
         yawTorque = Mathf.Clamp(yawTorque, -maxTurnSpeed, maxTurnSpeed);
 
