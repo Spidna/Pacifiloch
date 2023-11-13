@@ -1753,6 +1753,7 @@ GameObject:
   - component: {fileID: 1764906243}
   - component: {fileID: 1764906242}
   - component: {fileID: 1764906241}
+  - component: {fileID: 1764906245}
   m_Layer: 15
   m_Name: Bag
   m_TagString: Collectable
@@ -1888,6 +1889,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3efdb7e63518f846ae7765d40c72d07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rb: {fileID: 1764906243}
+  me: {fileID: 1764906240}
+  collectRange: {fileID: 1764906245}
 --- !u!54 &1764906243
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1921,6 +1925,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &1764906245
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1764906240}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1765176424
 PrefabInstance:
   m_ObjectHideFlags: 0

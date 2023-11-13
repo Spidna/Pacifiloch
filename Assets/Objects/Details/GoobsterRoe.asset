@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50be11e39891e2c43856b0379b28e40e, type: 3}
+  m_Name: GoobsterRoe
+  m_EditorClassIdentifier: 
+  Name: 
+  Description: 
+  Value: 0.0833
+  Object: {fileID: 8667178222659048316, guid: 8ae29d9b336bb3f498a3023c4dbc1a0d, type: 3}
