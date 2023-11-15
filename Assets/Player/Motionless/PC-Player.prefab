@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6138594351575156546}
   - component: {fileID: 67412095400718716}
   - component: {fileID: 6905200684877913759}
-  - component: {fileID: 1778985170}
   m_Layer: 6
   m_Name: Head
   m_TagString: Untagged
@@ -85,18 +84,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!114 &1778985170
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 599309171289152467}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 064b0e0244e81344ea52a6fd7ffde9fc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1643417812943702177
 GameObject:
   m_ObjectHideFlags: 0

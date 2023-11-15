@@ -60,23 +60,22 @@ public class KeyControls : MonoBehaviour
         inputA.Enable();
         // Activate Movement inputs
         inputA.Player.Movement.performed += OnMovePressed;
-        inputA.Player.Movement.canceled += OnMoveRelease;
+        // Movement.canceled doesn't work so we forced it to work in OnMovePressed() :)
         // Activate Sprint inputs
         inputA.Player.HardStride.performed += PushingStride;
         inputA.Player.HardStride.canceled += ReleaseStride;
         // Activate Mouse Look
-        Cursor.lockState = CursorLockMode.Locked;
+        // Cursor.lockState = CursorLockMode.Locked;
 
     }
     private void OnDisable()
     {
-        inputA.Disable();
         inputA.Player.Movement.performed -= OnMovePressed;
-        inputA.Player.Movement.canceled -= OnMoveRelease;
 
         inputA.Player.HardStride.performed -= PushingStride;
         inputA.Player.HardStride.canceled -= ReleaseStride;
 
+        inputA.Disable();
         /// TODO SCRAP THIS
         Cursor.lockState = CursorLockMode.None;
 
@@ -97,7 +96,7 @@ public class KeyControls : MonoBehaviour
 
     private void Update()
     {
-        CalculateLook();
+         CalculateLook();
 
     }
 
@@ -110,10 +109,14 @@ public class KeyControls : MonoBehaviour
         // Produce swim speed
         finalSwim *= swimSpeed * strokeOutput;
         // Ensure swim speed doesn't exceed cap
-        if (finalSwim.magnitude > swimCap)
+        if (finalSwim.sqrMagnitude > swimCap * swimCap)
         {
             finalSwim = direction * swimCap;
         }
+
+        // Move relative to rotation of the head
+        finalSwim = head.TransformDirection(finalSwim);
+
         // Move
         playerBody.AddForce(finalSwim);
     }
@@ -123,7 +126,16 @@ public class KeyControls : MonoBehaviour
     /// <param name="value">The Vector3 of movement input</param>
     private void OnMovePressed(InputAction.CallbackContext value)
     {
+        // Convert input value into Vector3
         moveVector = value.ReadValue<Vector3>();
+
+        // If no movement buttons are presently pressed, reset some values
+        if (moveVector == Vector3.zero)
+        {
+            OnMoveRelease();
+            return;
+        }
+
         // TODO probably remove the squaring
         moveVector.x *= Mathf.Abs(moveVector.x);
         moveVector.y *= Mathf.Abs(moveVector.y);
@@ -135,7 +147,7 @@ public class KeyControls : MonoBehaviour
     /// Reset input data for movement
     /// </summary>
     /// <param name="value">The Vector3 of movement input</param>
-    private void OnMoveRelease(InputAction.CallbackContext value)
+    private void OnMoveRelease()
     {
         moveVector = Vector3.zero;
         playerBody.drag = dragNeutral;
