@@ -24311,18 +24311,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 675976117, guid: d2b67f4b99f100241b13c12640790fdf, type: 3}
-      propertyPath: dragNeutral
-      value: 6.6
-      objectReference: {fileID: 0}
-    - target: {fileID: 675976117, guid: d2b67f4b99f100241b13c12640790fdf, type: 3}
-      propertyPath: dragSwimming
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 675976117, guid: d2b67f4b99f100241b13c12640790fdf, type: 3}
-      propertyPath: mouseSensitivity
-      value: 12.4
-      objectReference: {fileID: 0}
     - target: {fileID: 1643417813366370904, guid: d2b67f4b99f100241b13c12640790fdf, type: 3}
       propertyPath: m_RootOrder
       value: 9
@@ -24371,17 +24359,7 @@ PrefabInstance:
       propertyPath: m_Name
       value: PC-Player
       objectReference: {fileID: 0}
-    - target: {fileID: 9167083025002551349, guid: d2b67f4b99f100241b13c12640790fdf, type: 3}
-      propertyPath: m_AngularDrag
-      value: 500
-      objectReference: {fileID: 0}
-    - target: {fileID: 9167083025002551349, guid: d2b67f4b99f100241b13c12640790fdf, type: 3}
-      propertyPath: m_Constraints
-      value: 112
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 1778985170, guid: d2b67f4b99f100241b13c12640790fdf, type: 3}
-    - {fileID: 1643417813366370911, guid: d2b67f4b99f100241b13c12640790fdf, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d2b67f4b99f100241b13c12640790fdf, type: 3}
 --- !u!4 &1643995211800575857
 Transform:
