@@ -19,14 +19,29 @@ public class Sheathable : MonoBehaviour
     }
 
     /// <summary>
-    /// Store this item at sheaths[i]
+    /// Attempt to store this item at sheaths[i]
     /// </summary>
     /// <param name="index">Which slot to store in</param>
+    /// <param name="distance">Distance squared between sheath and me</param>
     /// <returns>true if successful</returns>
-    public bool sheathAt(int index)
+    public bool sheathAt(int index, float distance)
     {
+        // grab target sheath for quick access
+        Sheath target = sheaths.Slot[index];
 
-        return false;
+        // Check for scenerios that we cannot store here
+        // Occupied?
+        if (target.myContent != null)
+        { return false; }
+        // Close enough?
+        if (distance > sheaths.sucction * sheaths.sucction)
+        { return false; }
+
+
+
+        target.sheathHere(this);
+
+        return true;
     }
 
     /// <summary>
@@ -53,6 +68,6 @@ public class Sheathable : MonoBehaviour
             closestIndex = i;
         }
 
-        return closestSheath(i+1, closestIndex, ref closestDistance, nextDistance);
+        return closestSheath(i + 1, closestIndex, ref closestDistance, nextDistance);
     }
 }

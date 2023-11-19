@@ -5,7 +5,7 @@ using UnityEngine;
 public class MeleeWeapon : MonoBehaviour
 {
     [Tooltip("For trigger checks")]
-    [SerializeField] private List<Collider> myCollider; // ! TODO probably redundant !
+    [SerializeField] private List<Collider> offenseColliders; // ! TODO probably redundant !
 
 
     // Last enemy struck
