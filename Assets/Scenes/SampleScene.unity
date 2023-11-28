@@ -995,7 +995,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9188d8209df958647b5636a15c475b5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offenseColliders: []
+  hurtboxes: {fileID: 0}
 --- !u!1 &1119888686
 GameObject:
   m_ObjectHideFlags: 0
@@ -1821,7 +1821,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9188d8209df958647b5636a15c475b5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offenseColliders: []
+  hurtboxes: {fileID: 2068501961}
 --- !u!1 &1764906240
 GameObject:
   m_ObjectHideFlags: 0
@@ -2163,7 +2163,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7f13f8a2765ded4f85081650acc6d9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myWeapon: {fileID: 0}
+  colliders:
+  - {fileID: 2068501962}
+  - {fileID: 2068501963}
+  - {fileID: 2068501964}
 --- !u!135 &2068501962
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2173,7 +2176,7 @@ SphereCollider:
   m_GameObject: {fileID: 2068501959}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.02
   m_Center: {x: 0.09, y: 1.075, z: 0}
@@ -2186,7 +2189,7 @@ SphereCollider:
   m_GameObject: {fileID: 2068501959}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.02
   m_Center: {x: -0.09, y: 1.075, z: 0}
@@ -2199,7 +2202,7 @@ SphereCollider:
   m_GameObject: {fileID: 2068501959}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.03
   m_Center: {x: 0, y: 1.14, z: 0}
