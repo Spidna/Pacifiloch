@@ -10,44 +10,48 @@ using UnityEngine;
 /// </summary>
 public class MultiHurtbox : SingleHurtbox
 {
-    //public event System.Action ToDoOnTrigger;
-    //public List<Collider> colliders;
+    //public event System.Action triggerEvents;
+    [Tooltip("This class but stores individual hitboxes instead")]
+    [SerializeField] private List<SingleHurtbox> colliders;
 
     // Last enemy struck
     //private GenEnemy victim;
-    public GenEnemy getVictim() { return victim; }
+    //public GenEnemy getVictim() { return victim; }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        // Do nothing unless an enemy
-        if (other.tag != "WildTarget")
-            return;
-
-        // Collect GenEnemy component for functions to deal damage
-        if (!other.TryGetComponent(out victim))
-        {
-            Debug.Log("ERROR: " + this + " struck " + other + " which has no GenEnemy script attached.");
-            return;
-        }
-
-
-        // Execute collected events
-        ToDoOnTrigger();
-    }
+    // This is handled in parent class
+    ///new protected void OnTriggerEnter(Collider other)
+    ///{
+    ///    // Do nothing unless an enemy
+    ///    if (other.tag != "WildTarget")
+    ///        return;
+    ///
+    ///    // Collect GenEnemy component for functions to deal damage
+    ///    GenEnemy nVictim;
+    ///    if (!other.TryGetComponent(out nVictim))
+    ///    {
+    ///        Debug.Log("ERROR: " + this + " struck " + other + " which has no GenEnemy script attached.");
+    ///        return;
+    ///    }
+    ///    setVictim(nVictim);
+    ///
+    ///
+    ///    // Execute collected events
+    ///    OnTrigger();
+    ///}
 
     // Enable or Disable all my hurtbox colliders
-    public void EnableColliders()
+    new public void EnableColliders()
     {
-        foreach(Collider col in colliders)
+        foreach (SingleHurtbox col in colliders)
         {
-            col.enabled = true;
+            col.EnableColliders();
         }
     }
-    public void DisableColliders()
+    new public void DisableColliders()
     {
-        foreach(Collider col in colliders)
+        foreach (SingleHurtbox col in colliders)
         {
-            col.enabled = false;
+            col.DisableColliders();
         }
     }
 }

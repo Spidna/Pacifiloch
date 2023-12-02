@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class MeleeWeapon : MonoBehaviour
 {
-    [Tooltip("For damage trigger checks")]
-    [SerializeField] private PlayerHurtbox theHurt;
+    [Tooltip("Class which handles colliders and their trigger checks")]
+    [SerializeField] private SingleHurtbox theHurt;
 
     //private void OnTriggerEnter(Collider other)
     //{
