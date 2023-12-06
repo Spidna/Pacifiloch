@@ -1010,7 +1010,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edf35dce401b84f48bce727d33b59061, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  swimForce: 0.1
+  swimForce: 3
   minForce: 0
   minStroke: 0
   handTurnSpeed: 1
@@ -1018,10 +1018,6 @@ MonoBehaviour:
   handTurnEnabled: 1
   volumeFactor: 0.2
   hapticFactor: 0.001
-  enableKeyboard: 0
-  mouseTurnSpeed: {x: 1, y: 1}
-  degreeClamp: {x: 90, y: 80}
-  invertY: 0
   leftController: {fileID: 7429647832154031906}
   rightController: {fileID: 7429647831486590013}
   leftStrokeButton: {fileID: -5982496924579745919, guid: c348712bda248c246b8c49b3db54643f, type: 3}

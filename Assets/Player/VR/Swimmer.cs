@@ -8,36 +8,18 @@ public class Swimmer : MonoBehaviour
 {
     [Header("Values")]
     [Tooltip("Base Swim speed")]
-    [Range(0f, 2f)]
-    public float swimForce;
+    [Range(0f, 10f)] public float swimForce;
     [Tooltip("Minimum swing power needed to move")]
     public float minForce;
     [Tooltip("Minimum time between swings to count")]
     public float minStroke;
     [Tooltip("How fast player turns by using hand turning")]
-    [Range(0f, 1f)]
-    public float handTurnSpeed;
-    [Range(0f, 11f)]
-    public float maxTurnSpeed;
+    [Range(0f, 1f)] public float handTurnSpeed;
+    [Range(0f, 11f)] public float maxTurnSpeed;
     [Tooltip("Players turn with single hand swing")]
     public bool handTurnEnabled;
-    [Range(0f, 0.4f)]
-    [SerializeField] float volumeFactor;
-    [Range(0f, 0.01f)]
-    [SerializeField] float hapticFactor;
-
-    // TODO Probably remove this
-    [Header("Keyboard Controls")]
-    [Tooltip("Keyboard or VR controls")]
-    public bool enableKeyboard;
-    [Header("Mouse Input controls")]
-    [Tooltip("Mouse look sensitivity")]
-    public Vector2 mouseTurnSpeed = new Vector2(1, 1);
-    [Tooltip("Maximum rotation from the initial orientation")]
-    public Vector2 degreeClamp = new Vector2(90, 80);
-    [Tooltip("Invert vertical turning")]
-    public bool invertY;
-
+    [SerializeField][Range(0f, 0.4f)] float volumeFactor;
+    [SerializeField][Range(0f, 0.01f)] float hapticFactor;
 
     // Orientation state.
     Quaternion initOrientation;
@@ -156,10 +138,12 @@ public class Swimmer : MonoBehaviour
             var leftHandVel = leftControllerVel.action.ReadValue<Vector3>();
             var rightHandVel = rightControllerVel.action.ReadValue<Vector3>();
             Vector3 localVel = leftHandVel + rightHandVel;
+            // Squared to improve precision
             localVel.x *= Mathf.Abs(localVel.x); //* localVel.x;
             localVel.z *= Mathf.Abs(localVel.z); //* localVel.z;
             localVel.y *= Mathf.Abs(localVel.y); //* localVel.y;
-            localVel *= -1f; // Invert cuz we push against water to move the other way
+            // Invert cuz we push against water to move the other way
+            localVel *= -1f;
 
             // Make stroke if strong enough
             if (localVel.sqrMagnitude > minForce * minForce)
