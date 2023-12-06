@@ -14,8 +14,8 @@ public class Sheathable : MonoBehaviour
     /// </summary>
     public void OnRelease()
     {
-        float closestSheathDist = 0f;
-        int targetSheath = closestSheath(ref closestSheathDist);
+        //float closestSheathDist = 0f;
+        //int targetSheath = closestSheath(ref closestSheathDist);
     }
 
     /// <summary>
