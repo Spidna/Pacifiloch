@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 5299446999655685362}
   - component: {fileID: 5299446999655685367}
   - component: {fileID: 3206550202550450888}
+  - component: {fileID: 4777631263207161223}
   m_Layer: 7
   m_Name: Swordwasp
   m_TagString: WildTarget
@@ -176,7 +177,6 @@ MonoBehaviour:
   rb: {fileID: 5299446999655685361}
   offenceBox:
   - {fileID: 1134186610575911670}
-  animator: {fileID: 5299446999655685363}
   cooldown: {fileID: 11400000, guid: 31536007cb1897f448ada6615e7e49e2, type: 2}
   search: {fileID: 11400000, guid: 7001744f54412ec449078943e715635c, type: 2}
   windup: {fileID: 11400000, guid: 78b90d7e866728b4cb7e2d8d0a56185e, type: 2}
@@ -192,6 +192,29 @@ MonoBehaviour:
   advanceSpeed: 18
   targettingTurnRate: 4
   homingTurnRate: 0
+  animator: {fileID: 5299446999655685363}
+  idleName: Swimming
+  windupName: ChargeWindup
+  executeName: Charging
+  recoilName: ChargeRecoil
+--- !u!114 &4777631263207161223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4992806598980247998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09116999e2e63654aa46be668abefa36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hp: 100
+  maxHP: 100
+  animator: {fileID: 5299446999655685363}
+  rb: {fileID: 5299446999655685361}
+  idleName: Swimming
+  recoilName: DmgRecoil
 --- !u!1 &5053829656539349955
 GameObject:
   m_ObjectHideFlags: 0

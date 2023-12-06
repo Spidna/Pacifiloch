@@ -72,9 +72,7 @@ public class GenEnemy : MonoBehaviour
     /// <summary>
     /// Pick an attack based on a collective metronome
     /// </summary>
-    /// <param name="_atkSync">
-    /// Information that allows schooling enemies to act together
-    /// </param>
+    /// <param name="_atkSync">Information that allows schooling enemies to act together</param>
     /// <returns>true if successful, false if illegal</returns>
     bool pickAtk(AtkSync _atkSync)
     {

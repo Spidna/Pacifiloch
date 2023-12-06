@@ -1055,6 +1055,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   theHurt: {fileID: 0}
+  rb: {fileID: 0}
+  power: 0
+  knockBack: 0
 --- !u!1 &1119888686
 GameObject:
   m_ObjectHideFlags: 0
@@ -1940,6 +1943,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   theHurt: {fileID: 2068501961}
+  rb: {fileID: 1423324482}
+  power: 1
+  knockBack: 0
 --- !u!1 &1764906240
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,6 +9,15 @@ public class Durability : MonoBehaviour
 
     // Resistance types maybes
 
+    [Header("Animation")]
+    [Tooltip("My Animator, for recoil")]
+    [SerializeField] protected Animator animator;
+    [SerializeField] protected Rigidbody rb;
+    [Tooltip("Name for idle animation bool")]
+    [SerializeField] protected string idleName;
+    [Tooltip("Name for damage recoil animation trigger")]
+    [SerializeField] protected string recoilName;
+
     /// <summary>
     /// Recieve damage
     /// </summary>
@@ -31,25 +40,36 @@ public class Durability : MonoBehaviour
     /// Recieve damage and displacement, no animation
     /// </summary>
     /// <param name="dmg">Damage recieved, 0 to just push</param>
-    /// <param name="displace">How I'm displaced</param>
-    void dmgNdisplace(float dmg, Vector3 displace)
+    /// <param name="displace">Where I'm struck in gloabal space</param>
+    /// <param name="magnitude">How much I'm pushed</param>
+    public void dmgNdisplace(float dmg, Vector3 displace, float magnitude)
     {
-        if(!justDmg(dmg))
+        // Take Damage
+        if (!justDmg(dmg))
         {
+            // Don't animate recoil if we're dead
             return;
         }
 
-       
+
+        // Displacement
+        // calculate the direction to displace towards
+        displace -= transform.position;
+        displace = Vector3.Normalize(displace);
+        displace *= magnitude;
+
+        rb.AddForce(displace);
     }
     /// <summary>
     /// Recieve damage and animate, but don't displace
     /// </summary>
-    /// <param name="dmg"></param>
-    /// <param name="direction"></param>
-    void dmgNrecoil(float dmg, Vector3 direction)
+    /// <param name="dmg">Damage recieved, 0 to just push</param>
+    /// <param name="contact">Where I'm struck in gloabal space</param>
+    public void dmgNrecoil(float dmg, Vector3 contact)
     {
         if (!justDmg(dmg))
         {
+            // Don't animate recoil if we're dead
             return;
         }
 
@@ -57,14 +77,25 @@ public class Durability : MonoBehaviour
     /// <summary>
     /// Recieve damage, displace, and animate
     /// </summary>
-    /// <param name="dmg">Damage recieved</param>
-    /// <param name="displace">Target for displacement, and animation direction</param>
-    void dmgFull(float dmg, Vector3 displace)
+    /// <param name="dmg">Damage recieved, 0 to just push</param>
+    /// <param name="contact">Where I'm struck in gloabal space</param>
+    /// <param name="magnitude">How much I'm pushed</param>
+    public void dmgFull(float dmg, Vector3 contact, float magnitude)
     {
         if (!justDmg(dmg))
         {
+            // Don't animate recoil if we're dead
             return;
         }
+
+    }
+
+    /// <summary>
+    /// Execute animations for damage recoil
+    /// </summary>
+    /// <param name="contact">Where I'm struck in gloabal space</param>
+    protected void animateRecoil(Vector3 contact)
+    {
 
     }
 

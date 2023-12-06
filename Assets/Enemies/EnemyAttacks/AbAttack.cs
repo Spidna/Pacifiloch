@@ -22,8 +22,6 @@ public abstract class AbAttack : MonoBehaviour
             offenceBox[i].enabled = false;
     }
 
-    [SerializeField] public Animator animator;
-
     // Stored here because cooldown doesn't do anything
     [SerializeField] protected AbStage cooldown;
     [Tooltip("Check if attack is within range and such.")]
@@ -35,6 +33,9 @@ public abstract class AbAttack : MonoBehaviour
     [SerializeField] protected AbStage recoil;
     [Tooltip("windup, execution, recoil, cooldown")]
     [SerializeField] public AbStage curAtkStage;
+
+
+
     [Header("Values")]
     [Tooltip("Time remaining on current attack stage")]
     [SerializeField] public float progressTime;
@@ -67,6 +68,19 @@ public abstract class AbAttack : MonoBehaviour
     public float targettingTurnRate;
     [Tooltip("How aggressive the user homes in on the target during execution")]
     public float homingTurnRate;
+
+
+    [Header("Animation")]
+    [SerializeField] public Animator animator;
+    [Tooltip("Name for idle animation bool")]
+    [SerializeField] protected string idleName;
+    [Tooltip("Name for windup animation trigger")]
+    [SerializeField] protected string windupName;
+    [Tooltip("Name for attack animation trigger")]
+    [SerializeField] protected string executeName;
+    [Tooltip("Name for recovery recoil animation trigger")]
+    [SerializeField] protected string recoilName;
+
 
 
     //[SerializeField] protected Vector3 curTarget;

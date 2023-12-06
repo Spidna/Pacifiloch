@@ -69,7 +69,7 @@ public class Charge : AbAttack
     public override void startSearch()
     {
         // Check if attack can reach target
-        animator.SetBool("Swimming", true);
+        animator.SetBool(idleName, true);
 
         resetProgressTime();
         curAtkStage = search;
@@ -77,8 +77,8 @@ public class Charge : AbAttack
     public override void startWindup()
     {
         // Start Windup
-        animator.SetBool("Swimming", false);
-        animator.SetTrigger("ChargeWindup");
+        animator.SetBool(idleName, false);
+        animator.SetTrigger(windupName);
 
         resetProgressTime();
         curAtkStage = windup;
@@ -87,8 +87,8 @@ public class Charge : AbAttack
     {
         // BRING THE PAIN
         resetProgressTime();
-        animator.SetBool("Swimming", false);
-        animator.SetTrigger("Charging");
+        animator.SetBool(idleName, false);
+        animator.SetTrigger(executeName);
         setOffenceBox(0, true);
 
         curAtkStage = execute;
@@ -97,8 +97,8 @@ public class Charge : AbAttack
     {
         // Recover from attack
         resetProgressTime();
-        animator.SetBool("Swimming", false);
-        animator.SetTrigger("ChargeRecoil");
+        animator.SetBool(idleName, false);
+        animator.SetTrigger(recoilName);
         setOffenceBox(0, false);
 
         curAtkStage = recoil;
@@ -107,7 +107,7 @@ public class Charge : AbAttack
     {
         // Start cooldown
         resetProgressTime();
-        animator.SetBool("Swimming", true);
+        animator.SetBool(idleName, true);
 
         curAtkStage = cooldown;
     }

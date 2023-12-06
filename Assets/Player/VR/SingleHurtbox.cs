@@ -4,20 +4,24 @@ using UnityEngine;
 
 public class SingleHurtbox : MonoBehaviour
 {
-    public event System.Action triggerEvents;
+    public event System.Action<Durability, Vector3> triggerEvents;
     [SerializeField] new private Collider collider;
 
     // Last enemy struck
-    private GenEnemy victim;
-    public GenEnemy getVictim() { return victim; }
-    protected void setVictim(GenEnemy nVictim) { victim = nVictim; }
+    private Durability victim;
+    public Durability getVictim() { return victim; }
+    protected void setVictim(Durability nVictim) { victim = nVictim; }
 
     /// <summary>
     /// Just in case triggerEvents needs to be called elsewhere cuz protection is weird
     /// </summary>
-    public void TriggerEvents()
+    public void TriggerEvents(Durability targetHP, Vector3 contactPoint)
     {
-        triggerEvents();
+        triggerEvents(targetHP, contactPoint);
+    }
+    protected void TriggerEvents(Vector3 contactPoint)
+    {
+        triggerEvents(victim, contactPoint);
     }
 
     protected void OnTriggerEnter(Collider other)
@@ -29,13 +33,14 @@ public class SingleHurtbox : MonoBehaviour
         // Collect GenEnemy component for functions to deal damage
         if (!other.TryGetComponent(out victim))
         {
-            Debug.Log("ERROR: " + this + " struck " + other + " which has no GenEnemy script attached.");
+            Debug.Log("ERROR: " + this + " struck " + other + " which has no Durability script attached.");
             return;
         }
 
+        Vector3 contactPoint = other.ClosestPoint(collider.transform.position);
 
         // Execute collected events
-        TriggerEvents();
+        TriggerEvents(victim, contactPoint);
     }
 
     // Enable or Disable all my hurtbox colliders
