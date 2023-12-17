@@ -8,6 +8,9 @@ public class Durability : MonoBehaviour
     public float maxHP;
 
     // Resistance types maybes
+    [Header("Damage Resistance")]
+    [Tooltip("Applies to all damage")]
+    [SerializeField] protected float genDefense;
 
     [Header("Animation")]
     [Tooltip("My Animator, for recoil")]
@@ -25,8 +28,12 @@ public class Durability : MonoBehaviour
     /// <returns>true if alive still</returns>
     public bool justDmg(float dmg)
     {
-        hp -= dmg;
+        Debug.Log(hp + " - " + dmg);
 
+        // Apply defense
+        dmg -= genDefense;
+        // Apply damage
+        hp -= dmg;
         // Check if fallen below 0
         if (hp < 0f)
         {

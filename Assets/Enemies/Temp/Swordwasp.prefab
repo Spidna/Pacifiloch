@@ -211,6 +211,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hp: 100
   maxHP: 100
+  genDefense: 5
   animator: {fileID: 5299446999655685363}
   rb: {fileID: 5299446999655685361}
   idleName: Swimming

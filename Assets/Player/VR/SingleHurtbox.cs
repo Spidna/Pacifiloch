@@ -5,7 +5,15 @@ using UnityEngine;
 public class SingleHurtbox : MonoBehaviour
 {
     public event System.Action<Durability, Vector3> triggerEvents;
+
+    [Tooltip("Pen Pineapple Apple Pen")]
     [SerializeField] new private Collider collider;
+    [Tooltip("Have I been disabled from outside?")]
+    [SerializeField] public bool exDisabled;
+    [Tooltip("How much longer this hurtbox is paused.")]
+    [SerializeField] private float pauseLeft;
+    [Tooltip("How long this weapon pauses between damage")]
+    [SerializeField] private float dmgPause;
 
     // Last enemy struck
     private Durability victim;
@@ -24,8 +32,9 @@ public class SingleHurtbox : MonoBehaviour
         triggerEvents(victim, contactPoint);
     }
 
-    protected void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Tag: " + other.tag);
         // Do nothing unless an enemy
         if (other.tag != "WildTarget")
             return;
@@ -37,16 +46,77 @@ public class SingleHurtbox : MonoBehaviour
             return;
         }
 
-        Vector3 contactPoint = other.ClosestPoint(collider.transform.position);
+        // Pause my damage output if I cannot cleave
+        pauseIfNoCleave();
 
+        // Gather contactpoint
+        Vector3 contactPoint = other.ClosestPoint(collider.transform.position);
         // Execute collected events
         TriggerEvents(victim, contactPoint);
     }
 
+
+    private void FixedUpdate()
+    {
+        // Count down collider pause if paused
+        colliderCD();
+    }
+
     // Enable or Disable all my hurtbox colliders
+    /// <summary>
+    /// Only enables colliders if they aren't on cooldown
+    /// </summary>
     public void EnableColliders()
-    { collider.enabled = true; }
+    {
+        if (pauseLeft <= 0f)
+        {
+            pauseLeft = 0f;
+            collider.enabled = true;
+            // stop counting down collider cooldown
+            colliderCD = null;
+        }
+        else
+        {
+            // Redundancy to ensure the cooldown is called
+            colliderCD = ColliderCD;
+        }
+
+    }
     public void DisableColliders()
     { collider.enabled = false; }
 
+    // Temporarily disable colliders, like when a weapon is incapable of cleaving
+    [Tooltip("Pause hurtbox if I can't cleave, do nothing otherwise")]
+    private event System.Action pauseIfNoCleave;
+    public void EnableCleave()
+    { pauseIfNoCleave = null; }
+    /// <summary>
+    /// Make this hurtbox disable itself temporarily upon dealing damage
+    /// </summary>
+    /// <param name="dmgCD">How long I pause my damage output between strikes</param>
+    public void DisableCleave(float dmgCD)
+    {
+        dmgPause = dmgCD;
+        pauseIfNoCleave = pauseCollider;
+    }
+    private void pauseCollider()
+    {
+        // Begin countdown for collider reenable
+        colliderCD = ColliderCD;
+        pauseLeft = dmgPause;
+
+
+        DisableColliders();
+    }
+    [Tooltip("Carries corresponding function if we're on CD")]
+    private event System.Action colliderCD;
+    /// <summary>
+    /// Count down collider pause time
+    /// </summary>
+    private void ColliderCD()
+    {
+        pauseLeft -= Time.deltaTime;
+
+        EnableColliders();
+    }
 }

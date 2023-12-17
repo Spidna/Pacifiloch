@@ -42,16 +42,45 @@ public class MultiHurtbox : SingleHurtbox
     // Enable or Disable all my hurtbox colliders
     new public void EnableColliders()
     {
+        // Don't bother looping through alllll the colliders if we're already in agreement
+        if (exDisabled == false)
+            return;
+
+        exDisabled = false;
         foreach (SingleHurtbox col in colliders)
         {
             col.EnableColliders();
+            col.exDisabled = false;
         }
     }
     new public void DisableColliders()
     {
+        // Don't bother looping through alllll the colliders if we're already in agreement
+        if (exDisabled == true)
+            return;
+
+        exDisabled = true;
         foreach (SingleHurtbox col in colliders)
         {
             col.DisableColliders();
+            col.exDisabled = true;
+        }
+    }
+
+    new public void EnableCleave()
+    {
+        foreach(SingleHurtbox col in colliders)
+            col.EnableCleave();
+    }
+    /// <summary>
+    /// Make this hurtbox disable itself temporarily upon dealing damage
+    /// </summary>
+    /// <param name="dmgCD">How long I pause my damage output between strikes</param>
+    new public void DisableCleave(float dmgCD)
+    {
+        foreach(SingleHurtbox col in colliders)
+        {
+            DisableCleave(dmgCD);
         }
     }
 }

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEditor;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Swimmer : MonoBehaviour
@@ -13,12 +14,17 @@ public class Swimmer : MonoBehaviour
     public float minForce;
     [Tooltip("Minimum time between swings to count")]
     public float minStroke;
+
     [Tooltip("How fast player turns by using hand turning")]
     [Range(0f, 1f)] public float handTurnSpeed;
     [Range(0f, 11f)] public float maxTurnSpeed;
     [Tooltip("Players turn with single hand swing")]
     public bool handTurnEnabled;
+
+
+    [Tooltip("How loud swimming is")]
     [SerializeField][Range(0f, 0.4f)] float volumeFactor;
+    [Tooltip("How strong haptics for swimming is")]
     [SerializeField][Range(0f, 0.01f)] float hapticFactor;
 
     // Orientation state.
@@ -28,7 +34,10 @@ public class Swimmer : MonoBehaviour
     CursorLockMode prevLockState;
     bool cursourVisible;
 
+
+
     [Header("References")]
+    [SerializeField] Camera myCamera;
     [SerializeField] XRBaseController leftController;
     [SerializeField] XRBaseController rightController;
     [SerializeField] InputActionReference leftStrokeButton;
@@ -54,12 +63,16 @@ public class Swimmer : MonoBehaviour
         rb.useGravity = false;
         //rb.constraints = RigidbodyConstraints.FreezeRotation;
 
+
+
+
     }
 
     private void FixedUpdate()
     {
         // Make a noise based on the velocity of swimmer
         swimSound();
+        //toggleAbleFixedUpdate();
     }
 
     private void Update()
@@ -102,6 +115,11 @@ public class Swimmer : MonoBehaviour
 
         preSpeed = curSpeed;
     }
+    /// <summary>
+    /// Stretch FOV based on speed
+    /// </summary>
+
+    private event System.Action toggleAbleFixedUpdate;
 
     /// <summary>
     /// Input controls for VR
@@ -122,7 +140,8 @@ public class Swimmer : MonoBehaviour
     }
 
     // If the player hasn't released both movement buttons, don't turn yet
-    bool disableTurn = false;
+    // preventing nauseating turning at the end of a stroke
+    bool motionDisableTurn = false;
     /// <summary>
     /// Check if player is making input to translate
     /// </summary>
@@ -133,7 +152,7 @@ public class Swimmer : MonoBehaviour
         if (leftStrokeButton.action.IsPressed()
             && rightStrokeButton.action.IsPressed())
         {
-            disableTurn = true;
+            motionDisableTurn = true;
             // Collect velocity data from controllers
             var leftHandVel = leftControllerVel.action.ReadValue<Vector3>();
             var rightHandVel = rightControllerVel.action.ReadValue<Vector3>();
@@ -162,9 +181,9 @@ public class Swimmer : MonoBehaviour
         }
 
         /// If the player hasn't released both movement buttons, don't turn yet
-        if (disableTurn)
-            disableTurn = leftStrokeButton.action.IsPressed() || rightStrokeButton.action.IsPressed();
-        return disableTurn;
+        if (motionDisableTurn)
+            motionDisableTurn = leftStrokeButton.action.IsPressed() || rightStrokeButton.action.IsPressed();
+        return motionDisableTurn;
     }
 
     /// <summary>
@@ -233,5 +252,4 @@ public class Swimmer : MonoBehaviour
         // Apply the torque to the Rigidbody for yaw rotation.
         rb.AddTorque(Vector3.up * yawTorque, ForceMode.VelocityChange);
     }
-
 }

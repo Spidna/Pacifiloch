@@ -26,29 +26,48 @@ public class MeleeWeapon : MonoBehaviour
     void Start()
     {
         setupOnTrigger();
+        enough2Collide = Enough2Collide;
 
     }
     /// <summary>
     /// Setup all the functions that will be called when this weapon deals damage
     /// </summary>
-    private void setupOnTrigger()
+    protected void setupOnTrigger()
     {
         theHurt.triggerEvents += dealDmg;
     }
 
-    private float calcDamage()
+    protected float calcDamage()
     {
-        return Vector3.SqrMagnitude(rb.velocity) * power;
+        return rb.velocity.sqrMagnitude * power;
     }
 
     public void dealDmg(Durability target, Vector3 contactPoint)
     {
+        // 
         target.dmgNdisplace(calcDamage(), contactPoint, knockBack);
+
+
     }
 
-    // Update is called once per frame
-    void Update()
-    {
 
+    [Tooltip("Check if I'm going fast enough to enable hurtbox")]
+    public event System.Action enough2Collide;
+    protected void Enough2Collide()
+    {
+        if (calcDamage() > 1f)
+        {
+            theHurt.EnableColliders();
+        }
+        else
+        { 
+            theHurt.DisableColliders();
+        }
+    }
+
+
+    void FixedUpdate()
+    {
+        enough2Collide();
     }
 }

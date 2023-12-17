@@ -701,7 +701,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1048109210
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -726,7 +726,7 @@ MonoBehaviour:
   _alignmentWeight: 1.2
   targetWeight: 2.2
   _obstacleWeight: 9
-  spawnSize: 20
+  spawnSize: 1
   atkSync: {fileID: 11400000, guid: 984e475fd81eed24396e41d9835a7f64, type: 2}
   target: {fileID: 1020209528}
   _obstacleLayerMask: 10
