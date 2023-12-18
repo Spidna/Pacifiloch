@@ -47,7 +47,7 @@ public class SingleHurtbox : MonoBehaviour
         }
 
         // Pause my damage output if I cannot cleave
-        pauseIfNoCleave();
+        pauseIfNoCleave?.Invoke();
 
         // Gather contactpoint
         Vector3 contactPoint = other.ClosestPoint(collider.transform.position);
@@ -59,14 +59,14 @@ public class SingleHurtbox : MonoBehaviour
     private void FixedUpdate()
     {
         // Count down collider pause if paused
-        colliderCD();
+        colliderCD?.Invoke();
     }
 
     // Enable or Disable all my hurtbox colliders
     /// <summary>
     /// Only enables colliders if they aren't on cooldown
     /// </summary>
-    public void EnableColliders()
+    public virtual void EnableColliders()
     {
         if (pauseLeft <= 0f)
         {
@@ -82,7 +82,7 @@ public class SingleHurtbox : MonoBehaviour
         }
 
     }
-    public void DisableColliders()
+    public virtual void DisableColliders()
     { collider.enabled = false; }
 
     // Temporarily disable colliders, like when a weapon is incapable of cleaving

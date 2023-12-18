@@ -40,7 +40,7 @@ public class MultiHurtbox : SingleHurtbox
     ///}
 
     // Enable or Disable all my hurtbox colliders
-    new public void EnableColliders()
+    public override void EnableColliders()
     {
         // Don't bother looping through alllll the colliders if we're already in agreement
         if (exDisabled == false)
@@ -53,7 +53,7 @@ public class MultiHurtbox : SingleHurtbox
             col.exDisabled = false;
         }
     }
-    new public void DisableColliders()
+    public override void DisableColliders()
     {
         // Don't bother looping through alllll the colliders if we're already in agreement
         if (exDisabled == true)
