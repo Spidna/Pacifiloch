@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using GF = GlobalFunctions;
 
@@ -14,10 +15,11 @@ public class MeleeWeapon : MonoBehaviour
     [SerializeField] public float knockBack;
     [Tooltip("How much damage I theoretically will do this frame")]
     [SerializeField] protected float curDmg;
-    [Tooltip("Where I was last frame")]
-    [SerializeField] protected Transform preTransform;
+    [Tooltip("Where I was last frame (calcStall) frames")]
+    protected Queue<Vector3> prevPosition;
+    [Tooltip("How many frames of movement are considered for curDmg")]
+    [SerializeField] protected int calcStall;
 
-    //[Tooltip("How much min")]
 
 
     //private void OnTriggerEnter(Collider other)
@@ -33,7 +35,7 @@ public class MeleeWeapon : MonoBehaviour
     void Start()
     {
         setupOnTrigger();
-        setPreTransform();
+        prepPositionQueue();
     }
     /// <summary>
     /// Setup all the functions that will be called when this weapon deals damage
@@ -48,27 +50,33 @@ public class MeleeWeapon : MonoBehaviour
     /// </summary>
     protected void calcDmg()
     {
-
-        // sqrMagnitude I travelled between frames
+        // Magnitude I travelled between frames
         curDmg =
-            (GF.VecTimes(preTransform.position, preTransform.up)
-            - GF.VecTimes(transform.position, transform.up)
+            (GF.VecTimes((prevPosition.Dequeue() - transform.position), transform.up)
             ).magnitude;
-        setPreTransform();
+        prevPosition.Enqueue(transform.position);
         // Times power to make damage
         curDmg *= power;
-    }
-    protected void setPreTransform()
-    {
-        preTransform.position = transform.position;
-        preTransform.rotation = transform.rotation;
     }
     public float getDmg()
     {
         return curDmg;
     }
+    /// <summary>
+    /// Setup a base queue of recent positions
+    /// </summary>
+    protected void prepPositionQueue()
+    {
+        prevPosition = new Queue<Vector3>();
+        for (int i = 0; i < calcStall; i++)
+            prevPosition.Enqueue(transform.position);
+    }
 
-
+    /// <summary>
+    /// Called by HurtBox when in contact with enemy
+    /// </summary>
+    /// <param name="target">Who is taking the damage</param>
+    /// <param name="contactPoint">Where we made contact</param>
     public void dealDmg(Durability target, Vector3 contactPoint)
     {
         // 
@@ -76,17 +84,11 @@ public class MeleeWeapon : MonoBehaviour
 
 
     }
-
-    private float bestDmg = 0f;
+    /// <summary>
+    /// Check if the weapon is being thrust with enough force to be worth enabling
+    /// </summary>
     protected void enough2Collide()
     {
-        if (getDmg() > bestDmg)
-        {
-            bestDmg = getDmg();
-            Debug.Log(bestDmg);
-        }
-
-
 
         if (getDmg() > 1f)
         {
