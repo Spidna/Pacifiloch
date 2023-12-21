@@ -1104,9 +1104,12 @@ MonoBehaviour:
   theHurt: {fileID: 0}
   rb: {fileID: 0}
   power: 0
+  baseDmg: 0
   knockBack: 0
   curDmg: 0
   calcStall: 0
+  HitMarker: {fileID: 0}
+  hitBlocked: {fileID: 0}
 --- !u!1 &1119888686
 GameObject:
   m_ObjectHideFlags: 0
@@ -2098,9 +2101,12 @@ MonoBehaviour:
   theHurt: {fileID: 2068501961}
   rb: {fileID: 1423324482}
   power: 10
+  baseDmg: 10
   knockBack: 0
   curDmg: 0
   calcStall: 3
+  HitMarker: {fileID: 8300000, guid: 24180d6fd73cb034c90b6c715000cf91, type: 3}
+  hitBlocked: {fileID: 8300000, guid: 665bfcde3e4b0fc4a964a076fdfc4a15, type: 3}
 --- !u!1 &1764906240
 GameObject:
   m_ObjectHideFlags: 0

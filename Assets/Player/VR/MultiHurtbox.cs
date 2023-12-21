@@ -67,18 +67,26 @@ public class MultiHurtbox : SingleHurtbox
         }
     }
 
-    new public void EnableCleave()
+    public override void setupOnTrigger(System.Action<Durability, Vector3> action)
     {
         foreach(SingleHurtbox col in colliders)
+        {
+            col.setupOnTrigger(action);
+        }
+    }
+
+    public override void EnableCleave()
+    {
+        foreach (SingleHurtbox col in colliders)
             col.EnableCleave();
     }
     /// <summary>
     /// Make this hurtbox disable itself temporarily upon dealing damage
     /// </summary>
     /// <param name="dmgCD">How long I pause my damage output between strikes</param>
-    new public void DisableCleave(float dmgCD)
+    public override void DisableCleave(float dmgCD)
     {
-        foreach(SingleHurtbox col in colliders)
+        foreach (SingleHurtbox col in colliders)
         {
             DisableCleave(dmgCD);
         }

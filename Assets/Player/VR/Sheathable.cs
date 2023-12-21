@@ -8,7 +8,7 @@ public class Sheathable : MonoBehaviour
     [SerializeField] private SheathsList sheaths;
 
     [SerializeField] private GameObject me;
-    [SerializeField] private MeleeWeapon weapon;
+    [SerializeField] private ThrustWeapon weapon;
 
     /// <summary>
     /// Calcs and checks done when this item is let go by an XR controller

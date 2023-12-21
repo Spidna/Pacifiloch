@@ -21,17 +21,35 @@ public class Durability : MonoBehaviour
     [Tooltip("Name for damage recoil animation trigger")]
     [SerializeField] protected string recoilName;
 
+    [Header("Audio")]
+    [Tooltip("Where I make noise from, bruv")]
+    [SerializeField] protected AudioSource mySource;
+
     /// <summary>
     /// Recieve damage
     /// </summary>
     /// <param name="dmg">Damage recieved</param>
     /// <returns>true if alive still</returns>
-    public bool justDmg(float dmg)
+    /// <param name="hitblock">Sound the weapon makes if I defend it fully</param>
+    /// <param name="hitMarker">Sound the weapon makes if I take damage</param>
+    public bool justDmg(float dmg, AudioClip hitMarker, AudioClip hitblock)
     {
-        Debug.Log(hp + " - " + dmg);
 
         // Apply defense
         dmg -= genDefense;
+
+        // Make sound of being hit
+        if (dmg > 0)
+        {
+            makeNoise(hitMarker);
+        }
+        else
+        {
+            makeNoise(hitblock);
+            // Ensure we don't deal negative damage and avoid unnecessary follow up
+            return true;
+        }
+
         // Apply damage
         hp -= dmg;
         // Check if fallen below 0
@@ -49,10 +67,13 @@ public class Durability : MonoBehaviour
     /// <param name="dmg">Damage recieved, 0 to just push</param>
     /// <param name="displace">Where I'm struck in gloabal space</param>
     /// <param name="magnitude">How much I'm pushed</param>
-    public void dmgNdisplace(float dmg, Vector3 displace, float magnitude)
+    /// <param name="hitblock">Sound the weapon makes if I defend it fully</param>
+    /// <param name="hitMarker">Sound the weapon makes if I take damage</param>
+    public void dmgNdisplace
+        (float dmg, Vector3 displace, float magnitude, AudioClip hitMarker, AudioClip hitblock)
     {
         // Take Damage
-        if (!justDmg(dmg))
+        if (!justDmg(dmg, hitMarker, hitblock))
         {
             // Don't animate recoil if we're dead
             return;
@@ -72,9 +93,11 @@ public class Durability : MonoBehaviour
     /// </summary>
     /// <param name="dmg">Damage recieved, 0 to just push</param>
     /// <param name="contact">Where I'm struck in gloabal space</param>
-    public void dmgNrecoil(float dmg, Vector3 contact)
+    /// <param name="hitblock">Sound the weapon makes if I defend it fully</param>
+    /// <param name="hitMarker">Sound the weapon makes if I take damage</param>
+    public void dmgNrecoil(float dmg, Vector3 contact, AudioClip hitMarker, AudioClip hitblock)
     {
-        if (!justDmg(dmg))
+        if (!justDmg(dmg, hitMarker, hitblock))
         {
             // Don't animate recoil if we're dead
             return;
@@ -87,9 +110,11 @@ public class Durability : MonoBehaviour
     /// <param name="dmg">Damage recieved, 0 to just push</param>
     /// <param name="contact">Where I'm struck in gloabal space</param>
     /// <param name="magnitude">How much I'm pushed</param>
-    public void dmgFull(float dmg, Vector3 contact, float magnitude)
+    /// <param name="hitblock">Sound the weapon makes if I defend it fully</param>
+    /// <param name="hitMarker">Sound the weapon makes if I take damage</param>
+    public void dmgFull(float dmg, Vector3 contact, float magnitude, AudioClip hitMarker, AudioClip hitblock)
     {
-        if (!justDmg(dmg))
+        if (!justDmg(dmg, hitMarker, hitblock))
         {
             // Don't animate recoil if we're dead
             return;
@@ -104,6 +129,13 @@ public class Durability : MonoBehaviour
     protected void animateRecoil(Vector3 contact)
     {
 
+    }
+
+    protected void makeNoise(AudioClip noise)
+    {
+        // Slightly randomize pitch to avoid sounding toooo samey
+        float pitch = Random.value * 0.2f + 0.9f;
+        mySource.PlayOneShot(noise);
     }
 
     // Placeholder until implemented

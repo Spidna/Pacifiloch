@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GF = GlobalFunctions;
 
-public class MeleeWeapon : MonoBehaviour
+public class ThrustWeapon : MonoBehaviour
 {
     [Tooltip("Class which handles colliders and their trigger checks")]
     [SerializeField] protected SingleHurtbox theHurt;
@@ -11,6 +11,8 @@ public class MeleeWeapon : MonoBehaviour
     [SerializeField] protected Rigidbody rb;
     [Tooltip("Multiplied by sqrVelocity to calulate damage")]
     [SerializeField] public float power;
+    [Tooltip("Basic damage added to my damage")]
+    [SerializeField] public float baseDmg;
     [Tooltip("Multiplied by power to calculate shove distance")]
     [SerializeField] public float knockBack;
     [Tooltip("How much damage I theoretically will do this frame")]
@@ -19,6 +21,12 @@ public class MeleeWeapon : MonoBehaviour
     protected Queue<Vector3> prevPosition;
     [Tooltip("How many frames of movement are considered for curDmg")]
     [SerializeField] protected int calcStall;
+
+    [Header("SFX")]
+    [Tooltip("Sound made when this weapon deals damage")]
+    [SerializeField] public AudioClip HitMarker;
+    [Tooltip("Sound made when this weapon hits but deals no damage")]
+    [SerializeField] public AudioClip hitBlocked;
 
 
 
@@ -42,7 +50,7 @@ public class MeleeWeapon : MonoBehaviour
     /// </summary>
     protected void setupOnTrigger()
     {
-        theHurt.triggerEvents += dealDmg;
+        theHurt.setupOnTrigger(dealDmg);
     }
 
     /// <summary>
@@ -80,8 +88,7 @@ public class MeleeWeapon : MonoBehaviour
     public void dealDmg(Durability target, Vector3 contactPoint)
     {
         // 
-        target.dmgNdisplace(getDmg(), contactPoint, knockBack);
-
+        target.dmgNdisplace(getDmg(), contactPoint, knockBack, HitMarker, hitBlocked);
 
     }
     /// <summary>
@@ -92,10 +99,14 @@ public class MeleeWeapon : MonoBehaviour
 
         if (getDmg() > 1f)
         {
+            // Add base damage to round it out
+            curDmg += baseDmg;
+            // Turn back on the damaging colliders on this weapon
             theHurt.EnableColliders();
         }
         else
         {
+            // Not enough damage to be worth making collision checks
             theHurt.DisableColliders();
         }
     }

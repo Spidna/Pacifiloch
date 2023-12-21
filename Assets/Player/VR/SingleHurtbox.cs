@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SingleHurtbox : MonoBehaviour
 {
-    public event System.Action<Durability, Vector3> triggerEvents;
+    public event System.Action<Durability, Vector3> triggerEvents = delegate { };
 
     [Tooltip("Pen Pineapple Apple Pen")]
     [SerializeField] new private Collider collider;
@@ -20,6 +20,10 @@ public class SingleHurtbox : MonoBehaviour
     public Durability getVictim() { return victim; }
     protected void setVictim(Durability nVictim) { victim = nVictim; }
 
+    public virtual void setupOnTrigger(System.Action<Durability, Vector3> action)
+    {
+        triggerEvents = action;
+    }
     /// <summary>
     /// Just in case triggerEvents needs to be called elsewhere cuz protection is weird
     /// </summary>
@@ -34,7 +38,6 @@ public class SingleHurtbox : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Tag: " + other.tag);
         // Do nothing unless an enemy
         if (other.tag != "WildTarget")
             return;
@@ -88,13 +91,13 @@ public class SingleHurtbox : MonoBehaviour
     // Temporarily disable colliders, like when a weapon is incapable of cleaving
     [Tooltip("Pause hurtbox if I can't cleave, do nothing otherwise")]
     private event System.Action pauseIfNoCleave;
-    public void EnableCleave()
+    public virtual void EnableCleave()
     { pauseIfNoCleave = null; }
     /// <summary>
     /// Make this hurtbox disable itself temporarily upon dealing damage
     /// </summary>
     /// <param name="dmgCD">How long I pause my damage output between strikes</param>
-    public void DisableCleave(float dmgCD)
+    public virtual void DisableCleave(float dmgCD)
     {
         dmgPause = dmgCD;
         pauseIfNoCleave = pauseCollider;
