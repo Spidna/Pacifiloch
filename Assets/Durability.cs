@@ -141,6 +141,6 @@ public class Durability : MonoBehaviour
     // Placeholder until implemented
     void die()
     {
-        Debug.Log(this.gameObject + " died");
+        Destroy(gameObject, 1f);
     }
 }

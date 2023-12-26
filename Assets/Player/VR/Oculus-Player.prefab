@@ -479,7 +479,7 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.2
-  m_Height: 0.34
+  m_Height: 0.6
   m_Direction: 1
   m_Center: {x: 0, y: -0.22, z: 0}
 --- !u!1 &7429647831452703214
@@ -1010,10 +1010,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edf35dce401b84f48bce727d33b59061, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  swimForce: 3
+  swimForce: 6.21
   minForce: 0
   minStroke: 0
-  handTurnSpeed: 1
+  handTurnSpeed: 6
   maxTurnSpeed: 4
   handTurnEnabled: 1
   volumeFactor: 0.2

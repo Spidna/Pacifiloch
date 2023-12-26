@@ -16,7 +16,7 @@ public class Swimmer : MonoBehaviour
     public float minStroke;
 
     [Tooltip("How fast player turns by using hand turning")]
-    [Range(0f, 1f)] public float handTurnSpeed;
+    [Range(5f, 50f)] public float handTurnSpeed;
     [Range(0f, 11f)] public float maxTurnSpeed;
     [Tooltip("Players turn with single hand swing")]
     public bool handTurnEnabled;
