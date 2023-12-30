@@ -43,7 +43,7 @@ public class FlockAgent : WildMovement
         Vector3 obstacleVecNormal = CalcObstacleVector(out obstructed) * assignedFlock.obstacleWeight;
         // Home in on target if there's nothing in the way (aka player)
         Vector3 targetVector = Vector3.zero;
-        if(!obstructed)
+        if (!obstructed)
             targetVector = CalcTargetVector() * assignedFlock.targetWeight;
 
         // move
@@ -212,5 +212,10 @@ public class FlockAgent : WildMovement
     private bool IsInFOV(Vector3 neighbourPos)
     {
         return Vector3.Angle(transform.forward, neighbourPos - transform.position) <= angleFOV;
+    }
+
+    public void OnDestroy()
+    {
+        assignedFlock.allAgents.Remove(this);
     }
 }

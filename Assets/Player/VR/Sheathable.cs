@@ -10,13 +10,25 @@ public class Sheathable : MonoBehaviour
     [SerializeField] private GameObject me;
     [SerializeField] private ThrustWeapon weapon;
 
+    // Perform unsheathing when grabbed and sheathed
+    public System.Action unSheath;
+
     /// <summary>
     /// Calcs and checks done when this item is let go by an XR controller
     /// </summary>
     public void OnRelease()
     {
-        //float closestSheathDist = 0f;
-        //int targetSheath = closestSheath(ref closestSheathDist);
+        float closestSheathDist = 0f;
+        int targetSheath = closestSheath(ref closestSheathDist);
+        sheathAt(targetSheath, closestSheathDist);
+    }
+    /// <summary>
+    /// What to do when grabbed
+    /// </summary>
+    public void OnGrab()
+    {
+        // Attempt to unsheath
+        unSheath?.Invoke();
     }
 
     /// <summary>
@@ -39,7 +51,7 @@ public class Sheathable : MonoBehaviour
         { return false; }
 
 
-
+        // Attach to the sheath
         target.sheathHere(this);
 
         return true;

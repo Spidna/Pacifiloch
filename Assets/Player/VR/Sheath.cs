@@ -15,11 +15,20 @@ public class Sheath : MonoBehaviour
     /// <param name="toStore">What is being stored here</param>
     public void sheathHere(Sheathable toStore)
     {
+        myContent = toStore;
+        // Align transforms
+        toStore.transform.SetParent(this.transform);
 
+        // Tell Sheathable to do cleanup next time it's grabbed
+        toStore.unSheath += unSheathHere;
     }
 
     public void unSheathHere()
     {
+        // Don't execute this function until sheathed again
+        myContent.unSheath -= unSheathHere;
+        // Un store the sheathable
+        myContent = null;
 
     }
 }

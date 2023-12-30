@@ -18,6 +18,7 @@ public class MakePrefabs : MonoBehaviour
     void Start()
     {
         randStart();
+        Destroy(this.gameObject);
     }
 
     // Update is called once per frame
