@@ -98,7 +98,7 @@ MonoBehaviour:
   - {fileID: 13506711}
   - {fileID: 388272799}
   - {fileID: 1883464783}
-  sucction: 0.028
+  sucction: 0.55
 --- !u!1 &388272797
 GameObject:
   m_ObjectHideFlags: 0

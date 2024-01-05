@@ -14,7 +14,7 @@ public class Collectable : MonoBehaviour
     [Tooltip("Where we're going in space once collected")]
     public GameObject target;
 
-    public event EventHandler OnCollected;
+    public event System.Action OnCollected;
 
     private void Start()
     {
@@ -24,7 +24,7 @@ public class Collectable : MonoBehaviour
     void FixedUpdate()
     {
         // Run pullTo() if I'm in the process of being stored
-        OnCollected?.Invoke(this, EventArgs.Empty);
+        OnCollected?.Invoke();
     }
 
     private void OnDestroy()
@@ -53,7 +53,7 @@ public class Collectable : MonoBehaviour
     /// <summary>
     /// Animation of me being collected by a bag
     /// </summary>
-    private void pullTo(object sender, EventArgs e)
+    private void pullTo()
     {
         // Shrink a bit
         rb.transform.localScale *= shrinkRate;

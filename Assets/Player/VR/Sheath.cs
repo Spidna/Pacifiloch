@@ -15,9 +15,10 @@ public class Sheath : MonoBehaviour
     /// <param name="toStore">What is being stored here</param>
     public void sheathHere(Sheathable toStore)
     {
+        Debug.Log("Sheathing");
         myContent = toStore;
         // Align transforms
-        toStore.transform.SetParent(this.transform);
+        myContent.onUpdate += myContent.sheathSucction;
 
         // Tell Sheathable to do cleanup next time it's grabbed
         toStore.unSheath += unSheathHere;
@@ -27,8 +28,15 @@ public class Sheath : MonoBehaviour
     {
         // Don't execute this function until sheathed again
         myContent.unSheath -= unSheathHere;
+        // Remove parenting
+        myContent.transform.SetParent(null, true);
+        // Tell sheathable to forget about me :,(
+        myContent.wipeSheathIndex();
+        // Clear this cuz I am scared of what happens if someone grabs
+        // the weapon while it's being succ'd
+        myContent.onUpdate -= myContent.sheathSucction;
+       
         // Un store the sheathable
         myContent = null;
-
     }
 }
