@@ -57,7 +57,8 @@ public class Flock : MonoBehaviour ///10:00
     [SerializeField] private float _obstacleWeight;
     public float obstacleWeight { get { return _obstacleWeight; } }
 
-    [SerializeField] private int spawnSize; // TODO: update to use a list of spawn locations
+    [Tooltip("Number of units to spawn")]
+    public int spawnCount;
     public List<FlockAgent> allAgents { get; set; }
 
     [Header("Synced values")]
@@ -86,7 +87,7 @@ public class Flock : MonoBehaviour ///10:00
         // Convert to bitwise value.
         _obstacleLayerMask = 1 << _obstacleLayerMask;
 
-        GenerateUnits(spawnSize, spawnBounds);
+        allAgents = new List<FlockAgent>();
     }
 
     private void FixedUpdate() // TODO: Call checks for unit death
@@ -98,16 +99,14 @@ public class Flock : MonoBehaviour ///10:00
         atkSync.t += Time.deltaTime;
     }
 
-    /// <param name="spawnCount">number of units to spawn</param>
+    /// <param name="_spawnCount">number of units to spawn</param>
     /// <param name="_spawnBounds">size of area which can spawn in</param>
-    private void GenerateUnits(int spawnCount, Vector3 _spawnBounds)
+    public void GenerateUnits()
     {
-        allAgents = new List<FlockAgent>();
-
         for (int i = 0; i < spawnCount; i++)
         {
             Vector3 randomVector = UnityEngine.Random.insideUnitSphere;
-            randomVector = new Vector3(randomVector.x * _spawnBounds.x, randomVector.y * _spawnBounds.x, randomVector.z * _spawnBounds.x);
+            randomVector = new Vector3(randomVector.x * spawnBounds.x, randomVector.y * spawnBounds.x, randomVector.z * spawnBounds.x);
             Vector3 spawnPosition = transform.position + randomVector;
             Quaternion rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0);
             allAgents.Add(Instantiate(agentPrefab, spawnPosition, rotation));

@@ -253,22 +253,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1020209528}
   playerHead: {fileID: 1631398239}
+  sheaths: {fileID: 295040447}
+  enemySpawner: {fileID: 1048109210}
   patienceInputThreshold: 15
   patienceInputProgress: 0
   leftStrokeButton: {fileID: -5982496924579745919, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   rightStrokeButton: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  leftGrabButton: {fileID: 0}
+  rightGrabButton: {fileID: 0}
   patienceLessonThreshold: 20
   patienceLessonProgress: 0
   lectureProgress: 0
   turnThreshold: 0.7
   swimThreshold: {fileID: 764934737}
   swimProgress: 0
+  roeTable: {fileID: 1195518977651832452}
+  pearlTable: {fileID: 1334570475}
+  tableThreshold: 2
   voice: {fileID: 34662625}
-  nextLecture: {fileID: 0}
   interuptFade: 4
   turnLecture: {fileID: 8300000, guid: 22f070274938cb54fafafed60a861ec2, type: 3}
+  turnButton: {fileID: 0}
+  turnReminder: {fileID: 0}
+  complimentTail: {fileID: 0}
+  complimentHandTurn: {fileID: 0}
   swimLecture: {fileID: 8300000, guid: 860545a90e5f47a4180310eb4be99a17, type: 3}
+  swimButton: {fileID: 0}
+  swimReminder: {fileID: 0}
+  complimentSwim: {fileID: 0}
   fetchLecture: {fileID: 8300000, guid: e101ec5719c5e754ea31125661287921, type: 3}
+  grabLecture: {fileID: 0}
+  grabButton: {fileID: 0}
+  grabReminder: {fileID: 0}
+  sheathCompliment: {fileID: 0}
+  announceFight1: {fileID: 0}
+  announceFight2: {fileID: 0}
 --- !u!4 &34662624
 Transform:
   m_ObjectHideFlags: 0
@@ -902,7 +921,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1048109210
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -927,7 +946,7 @@ MonoBehaviour:
   _alignmentWeight: 1.2
   targetWeight: 2.2
   _obstacleWeight: 9
-  spawnSize: 6
+  spawnCount: 1
   atkSync: {fileID: 11400000, guid: 984e475fd81eed24396e41d9835a7f64, type: 2}
   target: {fileID: 1020209528}
   _obstacleLayerMask: 10
@@ -1306,6 +1325,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 02567f4d763da4a4c9301119d2e1d397, type: 3}
+--- !u!4 &1334570475 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1410243986200088019, guid: 02567f4d763da4a4c9301119d2e1d397, type: 3}
+  m_PrefabInstance: {fileID: 1334570474}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1336125246
 GameObject:
   m_ObjectHideFlags: 0
@@ -2078,6 +2102,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 02567f4d763da4a4c9301119d2e1d397, type: 3}
+--- !u!4 &1195518977651832452 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1410243986200088019, guid: 02567f4d763da4a4c9301119d2e1d397, type: 3}
+  m_PrefabInstance: {fileID: 1195518977651832451}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5915103414003436429
 PrefabInstance:
   m_ObjectHideFlags: 0
