@@ -22,6 +22,8 @@ public abstract class AbAttack : MonoBehaviour
             offenceBox[i].enabled = false;
     }
 
+    public string playerTag = "Player";
+
     // Stored here because cooldown doesn't do anything
     [SerializeField] protected AbStage cooldown;
     [Tooltip("Check if attack is within range and such.")]
@@ -37,6 +39,9 @@ public abstract class AbAttack : MonoBehaviour
 
 
     [Header("Values")]
+    [Tooltip("How much damage I'll deal")]
+    [SerializeField] public float dmg;
+
     [Tooltip("Time remaining on current attack stage")]
     [SerializeField] public float progressTime;
     public float getProgressTime()
@@ -81,7 +86,23 @@ public abstract class AbAttack : MonoBehaviour
     [Tooltip("Name for recovery recoil animation trigger")]
     [SerializeField] protected string recoilName;
 
+    public virtual void OnTriggerEnter(Collider other)
+    {
+        Durability playerHP;
+        // Ensure that we've struck the player
+        if (!other.CompareTag(playerTag))
+        {
+            return;
+        }
+        // And the player has a Durability component
+        if (!other.TryGetComponent<Durability>(out playerHP))
+        {
+            return;
+        }
 
+        // Send the damage to the player
+        playerHP.justDmg(dmg);
+    }
 
     //[SerializeField] protected Vector3 curTarget;
     //public Vector3 getTarget()

@@ -32,6 +32,7 @@ public class Sheathable : MonoBehaviour
         sheaths = FindObjectOfType<SheathsList>();
         if (sheaths == null)
             Debug.Log("No SheathsList in scene");
+
     }
 
     private void Update()
@@ -106,7 +107,9 @@ public class Sheathable : MonoBehaviour
         float closestSheathDist = 0f;
         targetSheath = closestSheath(ref closestSheathDist);
         sheathAt(targetSheath, closestSheathDist);
+        onRelease?.Invoke();
     }
+    public System.Action onRelease;
     /// <summary>
     /// What to do when grabbed
     /// </summary>

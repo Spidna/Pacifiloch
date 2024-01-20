@@ -17,6 +17,7 @@ public class TutorialEvents : EventParent
 
     [Header("Scene References")]
     [SerializeField] private GameObject player;
+    [SerializeField] private Durability playerHP;
     [Tooltip("Where the player's headset is looking.")]
     [SerializeField] private Transform playerHead;
     [SerializeField] private SheathsList sheaths;
@@ -78,18 +79,24 @@ public class TutorialEvents : EventParent
     [Header("Send the player on their first fetchquest")]
     public AudioClip fetchLecture;
     public AudioClip grabLecture;
+    public AudioClip fetchReminder;
     public AudioClip grabButton;
-    public AudioClip grabReminder;
+    public AudioClip sheathBlunder;
     public AudioClip sheathCompliment;
+
+    [SerializeField] protected List<Sheathable> sheathables;
 
     [Header("Teach combat")]
     public AudioClip announceFight1;
+    public AudioClip noGetHit;
+    public AudioClip stabLesson;
+    public AudioClip ouch;
     public AudioClip announceFight2;
 
     // Start is called before the first frame update
     protected override void Start()
     {
-
+        nextLecture = new Queue<AudioClip>();
 
         onUpdate += countPatience;
         onUpdate += TurnTutCheckClear;
@@ -199,9 +206,9 @@ public class TutorialEvents : EventParent
 
             // Don't make this check anymore
             onUpdate -= TurnTutCheckClear;
-            // Wipe Patience
-            patienceInputProgress = 0f;
-            patienceLessonProgress = 0f;
+            // Reset Patience
+            patienceLessonProgress = 0f - complimentTail.length - swimLecture.length;
+            patienceInputProgress = patienceLessonProgress;
             // Give next lesson and compliment their methods
             LectureChange(complimentTail, swimLecture);
 
@@ -218,9 +225,9 @@ public class TutorialEvents : EventParent
 
             // Don't make this check anymore
             onUpdate -= TurnTutCheckClear;
-            // Wipe Patience
-            patienceInputProgress = 0f;
-            patienceLessonProgress = 0f;
+            // Reset Patience
+            patienceLessonProgress = 0f - complimentHandTurn.length - swimLecture.length;
+            patienceInputProgress = patienceLessonProgress;
             // Give next lesson and encourage them
             LectureChange(complimentHandTurn, swimLecture);
 
@@ -238,8 +245,8 @@ public class TutorialEvents : EventParent
         if (patienceLessonProgress > patienceLessonThreshold)
         {
             // Reset patience so reminders can happen in a timely manner
-            patienceLessonProgress = 0f;
-            patienceInputProgress = 0f;
+            patienceLessonProgress = 0f - turnReminder.length;
+            patienceInputProgress = patienceLessonProgress;
             // Remind the player how to move
             LectureChange(turnReminder);
 
@@ -250,8 +257,8 @@ public class TutorialEvents : EventParent
         if (patienceInputProgress > patienceInputThreshold)
         {
             // Update Patience so reminders can happen in a timely manner
-            patienceInputProgress = 0f;
-            patienceLessonProgress -= 6f; // So Button prompt doesn't get interrupted by talking
+            patienceInputProgress = 0f - turnButton.length;
+            patienceLessonProgress -= 6f - turnButton.length; // So Button prompt doesn't get interrupted by talking
             // Remind the player which button to push
             LectureChange(turnButton);
 
@@ -275,6 +282,10 @@ public class TutorialEvents : EventParent
             onUpdate += FetchCheckReached;
             LectureChange(complimentSwim, fetchLecture);
 
+            // Reset Patience
+            patienceLessonProgress = 0f - complimentSwim.length - fetchLecture.length;
+            patienceInputProgress = patienceLessonProgress;
+
             //Bail cuz I've done my job
             return;
         }
@@ -289,8 +300,8 @@ public class TutorialEvents : EventParent
         if (patienceLessonProgress > patienceLessonThreshold)
         {
             // Reset patience so reminders can happen in a timely manner
-            patienceLessonProgress = 0f;
-            patienceInputProgress = 0f;
+            patienceLessonProgress = 0f - swimReminder.length;
+            patienceInputProgress = patienceLessonProgress;
             // Encourage better swimming
             LectureChange(swimReminder);
 
@@ -301,8 +312,8 @@ public class TutorialEvents : EventParent
         if (patienceInputProgress > patienceInputThreshold)
         {
             // Update Patience so reminders can happen in a timely manner
-            patienceInputProgress = 0f;
-            patienceLessonProgress -= 6f; // So Button prompt doesn't get interrupted by talking
+            patienceInputProgress = 0f - swimButton.length;
+            patienceLessonProgress -= 6f - swimButton.length; // So Button prompt doesn't get interrupted by talking
 
             //Encourage use of buttons
             LectureChange(swimButton);
@@ -329,9 +340,51 @@ public class TutorialEvents : EventParent
             onUpdate -= FetchCheckReached;
             onUpdate += GrabCheckClear;
 
+            // Reset Patience
+            patienceLessonProgress = 0f - grabLecture.length;
+            patienceInputProgress = patienceLessonProgress;
+
             return;
         }
+        // If the player has failed to sheath in too long, reminder them where sheaths are
+        if (patienceLessonProgress > patienceLessonThreshold)
+        {
+            // Check for sheath blunders for this frame
+            foreach (Sheathable s in sheathables)
+            {
+                s.onRelease -= fetchCheckBlunder;
+                s.onRelease += fetchCheckBlunder;
+            }
+        }
+        // If player hasn't pressed grab button in too long, remind them
+        if (patienceInputProgress > patienceInputThreshold)
+        {
+            // Ensure patience is handled appropriately
+            patienceInputProgress = 0f - grabButton.length - fetchReminder.length;
+            patienceLessonProgress -= 5f - grabButton.length - fetchReminder.length;
+
+            LectureChange(fetchReminder, grabButton);
+        }
     }
+    /// <summary>
+    /// Check if the player has dropped something without sheathing
+    /// </summary>
+    public void fetchCheckBlunder()
+    {
+        // Reset relevant patience
+        patienceLessonProgress = 0f - sheathBlunder.length;
+        // Ensure button reminder doesn't interupt
+        patienceInputProgress -= 5f - sheathBlunder.length;
+        // Remove call for this function
+        foreach (Sheathable s in sheathables)
+        {
+            s.onRelease -= fetchCheckBlunder;
+        }
+
+        // Remind the player where to sheath things
+        LectureChange(sheathBlunder);
+    }
+
     /// <summary>
     /// Teach the player to grab things
     /// </summary>
@@ -345,6 +398,10 @@ public class TutorialEvents : EventParent
                 LectureChange(sheathCompliment);
                 onUpdate -= GrabCheckClear;
                 onUpdate += CollectCheckClear;
+
+                // Reset Patience
+                patienceLessonProgress = 0f - sheathCompliment.length;
+                patienceInputProgress = patienceLessonProgress;
 
                 return;
             }
@@ -361,10 +418,10 @@ public class TutorialEvents : EventParent
         if (patienceLessonProgress > patienceLessonThreshold)
         {
             // Reset patience so reminders can happen in a timely manner
-            patienceLessonProgress = 0f;
-            patienceInputProgress = 0f;
+            patienceLessonProgress = 0f - fetchReminder.length;
+            patienceInputProgress = patienceLessonProgress;
             // Grant reminder
-            LectureChange(grabReminder);
+            LectureChange(fetchReminder);
 
             return;
         }
@@ -373,8 +430,8 @@ public class TutorialEvents : EventParent
         if (patienceInputProgress > patienceInputThreshold)
         {
             // Update Patience so reminders can happen in a timely manner
-            patienceInputProgress = 0f;
-            patienceLessonProgress -= 6f; // So Button prompt doesn't get interrupted by talking
+            patienceInputProgress = 0f - grabButton.length;
+            patienceLessonProgress -= 6f - grabButton.length; // So Button prompt doesn't get interrupted by talking
 
             //Encourage use of buttons
             LectureChange(grabButton);
@@ -397,16 +454,27 @@ public class TutorialEvents : EventParent
                 sheathTotal++;
             }
         }
+        // Move on to Combat lesson
         if (sheathTotal >= 4)
         {
-            LectureChange(announceFight1);
+            // Announce combat lesson, tell them don't get hit
+            LectureChange(announceFight1, noGetHit);
+            // Update event checks
             onUpdate -= CollectCheckClear;
             onUpdate += fight1CheckClear;
+            // Prep checking if the player gets hurt
+            playerHP.onDmg += checkPlayerHurt;
+
+            // Reset Patience
+            patienceLessonProgress = 0f - announceFight1.length - noGetHit.length;
+            patienceInputProgress = patienceLessonProgress;
 
             // Start the first fight
             enemySpawner.spawnCount = 1;
             enemySpawner.GenerateUnits();
+            // Update for the next fight
             enemySpawner.spawnCount = 10;
+            // Get outta here
             return;
         }
 
@@ -424,7 +492,7 @@ public class TutorialEvents : EventParent
         ///    patienceLessonProgress = 0f;
         ///    patienceInputProgress = 0f;
         ///    // Grant reminder
-        ///    LectureChange(grabReminder);
+        ///    LectureChange(sheathBlunder);
         ///    return;
         ///}
         /// Check if teacher should encourage using the right button
@@ -434,7 +502,7 @@ public class TutorialEvents : EventParent
         ///    patienceInputProgress = 0f;
         ///    patienceLessonProgress -= 6f; // So Button prompt doesn't get interrupted by talking
         ///    //Encourage use of buttons
-        ///    LectureChange(grabButton);
+        ///    LectureChange(fetchReminder);
         ///    return;
         ///}
     }
@@ -451,10 +519,27 @@ public class TutorialEvents : EventParent
             onUpdate += fight2CheckClear;
             LectureChange(announceFight2);
 
-            // TODO remove once no longer Demo Build
+            // Spawn next wave
+            enemySpawner.GenerateUnits();
+
+            // TODO remove this LINE once no longer Demo Build
             // This is just to make the Demo theoreticaly infinite
             enemySpawner.spawnCount *= 15 / 10;
+
+            return;
         }
+    }
+    /// <summary>
+    /// Teach the player about damage when they get hurt
+    /// </summary>
+    public void checkPlayerHurt()
+    {
+        // Reset patience
+        patienceInputProgress = 0f - ouch.length;
+        patienceLessonProgress = patienceInputProgress;
+
+        // Teach the player about HP bar
+        LectureChange(ouch);
     }
     /// <summary>
     /// Identical to fight1CheckClear for the demo

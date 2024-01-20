@@ -92,10 +92,8 @@ public class Flock : MonoBehaviour ///10:00
 
     private void FixedUpdate() // TODO: Call checks for unit death
     {
-        //for (int i = 0; i < allAgents.Count; i++)
-        //{
-        //    allAgents[i].Move();
-        //}
+
+
         atkSync.t += Time.deltaTime;
     }
 
