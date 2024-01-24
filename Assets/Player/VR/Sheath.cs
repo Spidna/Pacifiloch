@@ -15,9 +15,15 @@ public class Sheath : MonoBehaviour
     /// <param name="toStore">What is being stored here</param>
     public void sheathHere(Sheathable toStore)
     {
-        Debug.Log("Sheathing");
+        // Cancel Attempted sheathing if occupied
+        if (myContent != null)
+            return;
+
+
         myContent = toStore;
         // Align transforms
+        myContent.rb.isKinematic = true;
+        myContent.transform.SetParent(this.transform, true);
         myContent.onUpdate += myContent.sheathSucction;
 
         // Tell Sheathable to do cleanup next time it's grabbed
@@ -35,7 +41,7 @@ public class Sheath : MonoBehaviour
         // Clear this cuz I am scared of what happens if someone grabs
         // the weapon while it's being succ'd
         myContent.onUpdate -= myContent.sheathSucction;
-       
+
         // Un store the sheathable
         myContent = null;
     }

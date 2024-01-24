@@ -13,9 +13,11 @@ public class Sheathable : MonoBehaviour
 
     [Header("Scene References")]
     [SerializeField] private GameObject me;
+    [Tooltip("Where my anchor is for moving to sheath, same as reverse grip")]
+    [SerializeField] private Transform gripTransform;
     [Tooltip("This may be Null, ensure that's handled")]
     [SerializeField] private ThrustWeapon weapon;
-    [SerializeField] private Rigidbody rb;
+    [SerializeField] public Rigidbody rb;
 
     // Perform unsheathing when grabbed and sheathed
     public System.Action unSheath;
@@ -42,7 +44,6 @@ public class Sheathable : MonoBehaviour
 
     public void sheathSucction()
     {
-        Debug.Log(succTime);
         // Error Handling
         if (targetSheath < 0 || targetSheath > 3)
         {
@@ -64,9 +65,9 @@ public class Sheathable : MonoBehaviour
 
         if (succTime > maxSuccTime)
         { // Snap & stick to sheath
-            rb.isKinematic = true;
-            transform.SetParent(sheathToBe, true);
-            transform.position = sheathToBe.position;
+            //rb.isKinematic = true;
+            //transform.SetParent(sheathToBe, true);
+            //transform.position = sheathToBe.position;
 
             // Forget this function until sheathed again
             onUpdate -= sheathSucction;
@@ -75,29 +76,24 @@ public class Sheathable : MonoBehaviour
         }
         else // Move towards sheath and count succtime
         {
+            // Calculate Lerp progress
             succTime += Time.deltaTime;
+            float t = Mathf.Clamp01(succTime / maxSuccTime);
 
-            // calc distance from me to sheath
-            Vector3 posDifference = sheathToBe.position - transform.position;
-            // calc how far i want to move this frame
-            Vector3 plannedMove = posDifference.normalized;
-            plannedMove *= sheathForce * Time.deltaTime;
-            // Accelerate
-            plannedMove *= (1f + succTime);
+            // Calculate how far is left to move
+            Vector3 posSum = gripTransform.localPosition    ;
+            Quaternion rotSum = gripTransform.localRotation ;
 
-            // If I'm gonna overshoot then just use difference
-            if (plannedMove.sqrMagnitude > posDifference.sqrMagnitude)
-            {
-                plannedMove = posDifference;
-            }
-            // Make the movement
-            transform.position += plannedMove;
+
+            // Lerp
+            transform.localPosition = Vector3.Lerp(transform.localPosition, posSum, t);
+            transform.localRotation = Quaternion.Slerp(transform.localRotation, rotSum, t);
         }
     }
     [Tooltip("How long since player released near sheath")]
     private float succTime;
     [Tooltip("How long until snapping to sheath")]
-    [SerializeField] private float maxSuccTime = 0.13f;
+    [SerializeField] private float maxSuccTime = 0.2f;
 
     /// <summary>
     /// Calcs and checks done when this item is let go by an XR controller
@@ -145,30 +141,31 @@ public class Sheathable : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// Find the closest sheath and how far it is
     /// </summary>
     /// <param name="closestDistance">reference to the SqrMagnitude of distance of closest sheath</param>
     /// <returns>The index of the closest sheath</returns>
     private int closestSheath(ref float closestDistance)
     {
+        float nextDistance; // How close the currently checked sheath is
+        int closestIndex = 0; // Which sheath is currently the closest
+        // Calc i = 0  before the loop to ensure we have a baseline value
         closestDistance = Vector3.SqrMagnitude(me.transform.position - sheaths.Slot[0].transform.position);
-
-        return closestSheath(1, 0, ref closestDistance);
-    }
-    private int closestSheath(int i, int closestIndex, ref float closestDistance, float nextDistance = 0f)
-    {
-        if (i >= sheaths.Slot.Count)
-        { return closestIndex; }
-        nextDistance = Vector3.SqrMagnitude(me.transform.position - sheaths.Slot[i].transform.position);
-
-        // Update new closest
-        if (closestDistance < nextDistance)
+        // Loop thru the rest of the Slots to find the closest
+        for (int i = 1; i < sheaths.Slot.Count; i++)
         {
-            closestDistance = nextDistance;
-            closestIndex = i;
+            // Find how close this sheath is
+            nextDistance = Vector3.SqrMagnitude(me.transform.position - sheaths.Slot[i].transform.position);
+            // Update closest sheath if this sheath is closer
+            if (closestDistance > nextDistance)
+            {
+                closestDistance = nextDistance;
+                closestIndex = i;
+            }
         }
 
-        return closestSheath(i + 1, closestIndex, ref closestDistance, nextDistance);
+        // closestDistance is a reference so it's already stored
+        return closestIndex;
     }
 
     public void wipeSheathIndex()
