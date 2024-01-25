@@ -9,4 +9,5 @@ public class SheathsList : MonoBehaviour
 
     [Tooltip("Range Sheaths can grab from")]
     [Range(0f, 2f)] public float sucction;
+
 }

@@ -61,12 +61,12 @@ public class Swimmer : MonoBehaviour
     { // Force rigidbody settings to prevent problems
         rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
-        //rb.constraints = RigidbodyConstraints.FreezeRotation;
 
 
 
 
     }
+    
 
     private void FixedUpdate()
     {
