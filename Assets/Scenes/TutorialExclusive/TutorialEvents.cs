@@ -101,6 +101,7 @@ public class TutorialEvents : EventParent
         onUpdate += countPatience;
         onUpdate += TurnTutCheckClear;
         LectureChange(turnLecture);
+
     }
 
     /// <summary>
