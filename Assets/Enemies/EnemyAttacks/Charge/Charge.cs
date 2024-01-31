@@ -43,6 +43,11 @@ public class Charge : AbAttack
                 Debug.LogWarning("ERR: " + this + " missing offenceBox" + i);
             }
         }
+
+        // Assign attack stages with animation durations
+        maxWindup = GetAnimationClip(windupName);
+        maxExecute = GetAnimationClip(executeName);
+        maxRecoil = GetAnimationClip(recoilName);
     }
 
     private void Update()

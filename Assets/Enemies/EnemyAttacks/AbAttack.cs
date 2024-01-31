@@ -49,16 +49,16 @@ public abstract class AbAttack : MonoBehaviour
     public void resetProgressTime()
     { progressTime = 0f; }
 
-    [Tooltip("Duration of Windup in seconds")]
+    [Tooltip("Duration of Windup in seconds, assigned by animator")]
     [SerializeField] protected float maxWindup;
     public float getMaxWindup() { return maxWindup; }
-    [Tooltip("Duration of Execution in seconds")]
+    [Tooltip("Duration of Execution in seconds, assigned by animator")]
     [SerializeField] protected float maxExecute;
     public float getMaxExecute() { return maxExecute; }
-    [Tooltip("Duration of Recoil in seconds")]
+    [Tooltip("Duration of Recoil in seconds, assigned by animator")]
     [SerializeField] protected float maxRecoil;
     public float getMaxRecoil() { return maxRecoil; }
-    [Tooltip("Duration of Cooldown in seconds")]
+    [Tooltip("Duration of Cooldown in seconds, assigned here")]
     [SerializeField] protected float maxCooldown;
     public float getMaxCooldown() { return maxCooldown; }
 
@@ -144,4 +144,36 @@ public abstract class AbAttack : MonoBehaviour
     public abstract void startExecution();
     public abstract void startRecoil();
     public abstract void startCooldown();
+
+    // Helper method to get the animation clip by name
+    public virtual float GetAnimationClip(string clipName)
+    {
+        // Get the animation clip by name
+        AnimationClip animationClip = new AnimationClip();
+
+        Animation anim = GetComponent<Animation>();
+
+        // Check if the animation component is not null
+        if (anim != null)
+        {
+            // Iterate through each clip in the animation component
+            foreach (AnimationState state in anim)
+            {
+                // Check if the clip name matches the desired name
+                if (state.name == clipName)
+                {
+                    animationClip = state.clip;
+                }
+            }
+        }
+        else
+        {
+            Debug.Log("ERR: " + clipName + " not found.");
+            return 0f; // Return 0f if the clip is not found
+        }
+
+
+        // Return duration of the clip
+        return animationClip.length;
+    }
 }
