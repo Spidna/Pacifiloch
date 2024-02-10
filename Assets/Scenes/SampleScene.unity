@@ -1014,6 +1014,10 @@ PrefabInstance:
       propertyPath: handTurnSpeed
       value: 11
       objectReference: {fileID: 0}
+    - target: {fileID: 7429647831942275415, guid: ec32993f49cbde04f97f356981974e03, type: 3}
+      propertyPath: handTurnSmoothing
+      value: 0.289
+      objectReference: {fileID: 0}
     - target: {fileID: 7429647831942275416, guid: ec32993f49cbde04f97f356981974e03, type: 3}
       propertyPath: m_Name
       value: Oculus-Player
