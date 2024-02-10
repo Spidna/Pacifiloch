@@ -6,8 +6,6 @@ public class Sheathable : MonoBehaviour
 {
     [Tooltip("Usable Sheaths and relevant data")]
     [SerializeField] private SheathsList sheaths;
-    [Tooltip("How far I travel /time to get to sheath")]
-    [SerializeField] private float sheathForce = 0.2f;
 
     private int targetSheath = -1;
 

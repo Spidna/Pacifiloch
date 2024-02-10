@@ -18,6 +18,8 @@ public class Swimmer : MonoBehaviour
     [Tooltip("How fast player turns by using hand turning")]
     [Range(5f, 50f)] public float handTurnSpeed;
     [Range(0f, 11f)] public float maxTurnSpeed;
+    [Tooltip("Smoothing applied to hand turning, higher slower & smoother")]
+   [Range(0f, 1f)] public float handTurnSmoothing;
     [Tooltip("Players turn with single hand swing")]
     public bool handTurnEnabled;
 
@@ -246,6 +248,9 @@ public class Swimmer : MonoBehaviour
         float zTorque = turnVel.z * controllerPos.x;
         float yawTorque = xTorque + zTorque;
         yawTorque *= handTurnSpeed * Time.deltaTime;
+
+        // LERP with previous torque for smoothing
+        yawTorque = Mathf.Lerp(yawTorque, Vector3.Magnitude(rb.angularVelocity), handTurnSmoothing);
         // Limit rotation speed to prevent sickness
         yawTorque = Mathf.Clamp(yawTorque, -maxTurnSpeed, maxTurnSpeed);
 
